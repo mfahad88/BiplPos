@@ -54,7 +54,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="401dp"
+        android:layout_height="390dp"
         android:layout_marginTop="100dp">
 
         <TableLayout
