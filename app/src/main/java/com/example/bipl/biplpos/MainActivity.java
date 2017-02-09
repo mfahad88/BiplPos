@@ -2,7 +2,11 @@ package com.example.bipl.biplpos;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        WifiManager mng = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if(!wifi.isConnected()){
+            mng.setWifiEnabled(true);
+        }
         user=(EditText)findViewById(R.id.editTextUser);
         pass=(EditText)findViewById(R.id.editTextPass);
         btn_login=(Button)findViewById(R.id.buttonLogin);

@@ -1,62 +1,97 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    tools:context="layout.InventoryFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:inputType="textPersonName"
-        android:text="@string/name"
-        android:width="100dp"
-        android:ems="10"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/editTextName" />
-
-
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:layout_marginTop="10dp"
-        android:text="@string/unitPrice"
-        android:width="100dp"
-        android:layout_marginLeft="130dp"
-        android:ems="10"
-        android:id="@+id/editTextUnitPrice" />
-    <Button
-        android:text="@string/done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="240dp"
-        android:background="@drawable/roundbtngreen"
-        android:id="@+id/buttonDone" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        android:scrollbars="vertical">
-
-        <LinearLayout
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            tools:context="layout.InventoryFragment">
+
+            <!-- TODO: Update blank fragment layout -->
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:inputType="textPersonName"
+                android:hint="@string/name"
+                android:width="100dp"
+                android:ems="10"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/editTextName" />
+
+
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:layout_marginTop="10dp"
+                android:hint="@string/unitPrice"
+                android:width="100dp"
+                android:singleLine="true"
+                android:layout_marginLeft="130dp"
+                android:ems="10"
+                android:id="@+id/editTextUnitPrice" />
+            <Button
+                android:text="@string/done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="240dp"
+                android:background="@drawable/roundbtngreen"
+                android:id="@+id/buttonDone"
+                />
 
             <TableLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blueSubHeading"
+                    android:paddingTop="3dp" />
+
+            </TableLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="80dp"
-                android:id="@+id/tabLayout"/>
+                android:layout_marginTop="100dp"
+                android:scrollbars="vertical">
 
-        </LinearLayout>
-    </ScrollView>
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tableLayout">
 
-</FrameLayout>
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/blueSubHeading">
+
+                            <TextView
+                                android:text="Name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:width="175dp"
+                                android:textSize="18dp"
+                                android:textStyle="bold"
+                                android:gravity="center_horizontal"/>
+
+                            <TextView
+                                android:text="Unit Price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:width="170dp"
+                                android:textStyle="bold"
+                                android:gravity="center_horizontal"
+                                android:textSize="18dp"
+                                />
+                        </TableRow>
+                    </TableLayout>
+            </ScrollView>
+
+        </FrameLayout>
