@@ -36,12 +36,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="240dp"
-        android:background="@color/btnGreen"
+        android:background="@drawable/roundbtngreen"
         android:id="@+id/buttonDone" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
         android:scrollbars="vertical">
 
         <LinearLayout

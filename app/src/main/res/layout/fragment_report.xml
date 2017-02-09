@@ -1,0 +1,101 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.ReportFragment">
+
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="left"
+        android:id="@+id/spinnerDate" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center_vertical"
+        android:background="@color/blueSubHeading">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="80dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="120dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="155dp"/>
+        </TableRow>
+
+    </TableLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="401dp"
+        android:layout_marginTop="100dp">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tableBills">
+
+        </TableLayout>
+    </ScrollView>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="500dp"
+        android:gravity="center_vertical"
+        android:background="@color/blueSubHeading">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="200dp"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="150dp"
+                android:id="@+id/totalBills" />
+        </TableRow>
+
+    </TableLayout>
+
+</FrameLayout>

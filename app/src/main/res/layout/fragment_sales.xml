@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:fontFamily="serif"
         android:textStyle="bold" />
 
@@ -22,54 +22,77 @@
         android:layout_marginRight="20dp"
         android:gravity="right"
         android:layout_marginTop="10dp"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:fontFamily="serif"
         android:textStyle="bold"
         android:id="@+id/textTotal"/>
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="25dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center_vertical"
+        android:background="@color/blueSubHeading">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="55dp"
-            android:background="@color/blueSubHeading">
+            android:layout_height="match_parent">
 
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:text="Name"
-                android:gravity="center_horizontal"
-                android:textSize="15dp"
-                android:ems="8"/>
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="150dp"
+                />
 
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:text="Quantity"
-                android:gravity="center_horizontal"
-                android:textSize="15dp"
-                android:ems="6"/>
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="100dp"
+                />
 
-            <EditText
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:text="Unit Price"
-                android:gravity="center_horizontal"
-                android:textSize="15dp"
-                android:ems="6"/>
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="15sp"
+                android:width="105dp"/>
         </TableRow>
 
     </TableLayout>
 
+    <Button
+        android:text="@string/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonClear"
+        android:background="@drawable/roundbtnred"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="30dp"
+        android:width="130dp"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:text="@string/done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonDone"
+        android:background="@drawable/roundbtngreen"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"
+        android:width="130dp"
+        android:hapticFeedbackEnabled="false" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="376dp"
         android:layout_marginTop="100dp">
 
         <TableLayout
