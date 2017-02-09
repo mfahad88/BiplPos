@@ -27,50 +27,56 @@
         android:textStyle="bold"
         android:id="@+id/textTotal"/>
 
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="55dp"
+            android:background="@color/blueSubHeading">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Name"
+                android:gravity="center_horizontal"
+                android:textSize="15dp"
+                android:ems="8"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Quantity"
+                android:gravity="center_horizontal"
+                android:textSize="15dp"
+                android:ems="6"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Unit Price"
+                android:gravity="center_horizontal"
+                android:textSize="15dp"
+                android:ems="6"/>
+        </TableRow>
+
+    </TableLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp">
+        android:layout_marginTop="100dp">
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:text="Name"
-                        android:gravity="center_horizontal"
-                        android:f
-                        android:ems="5"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </TableLayout>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/tableOrder"/>
     </ScrollView>
-
 
 
 </FrameLayout>
