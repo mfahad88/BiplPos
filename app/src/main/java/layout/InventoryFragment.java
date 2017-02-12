@@ -1,9 +1,11 @@
 package layout;
 
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,13 +32,18 @@ public class InventoryFragment extends Fragment {
     TextView name_tv;
     TextView unit_tv;
     Float dialogQuantity;
-    private String prodName,prodPrice;
+    private String prodName,prodPrice,prodQty;
+    private  String inventoryName,inventoryPrice;
     View view;
     private int Id=0;
     private int Id_prod=0;
     public InventoryFragment() {
         // Required empty public constructor
     }
+    public static InventoryFragment newInstance() {
+        return new InventoryFragment();
+    }
+
 
 
     @Override
@@ -48,7 +55,7 @@ public class InventoryFragment extends Fragment {
         unitPrice = (EditText) view.findViewById(R.id.editTextUnitPrice);
         btn_done = (Button) view.findViewById(R.id.buttonDone);
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
-        // final DbHelper dbHelper=new DbHelper(view.getContext());
+
         try {
             new getRecords().execute();
         } catch (Exception e) {
@@ -60,12 +67,11 @@ public class InventoryFragment extends Fragment {
             public void onClick(View v) {
                 if (!String.valueOf(name.getText()).equals("") && !String.valueOf(unitPrice.getText()).equals("")) {
                     try {
-                        prodName=String.valueOf(name.getText());
-                        prodPrice=String.valueOf(unitPrice.getText());
-                        fillTable(prodName,prodPrice);
+                        inventoryName=String.valueOf(name.getText());
+                        inventoryPrice=String.valueOf(unitPrice.getText());
+                        fillTable(inventoryName,inventoryPrice);
                         Id++;
                         new insertRecords().execute();
-
                     } catch (Exception e) {
                         Log.e("TAG", e.getMessage());
                     }
@@ -74,17 +80,15 @@ public class InventoryFragment extends Fragment {
                     name.setHint("Name");
                     unitPrice.setText(null);
                     unitPrice.setHint("Unit Price");
-                    name.requestFocus();
+
 
                 }
             }
         });
         return view;
-
-
     }
 
-    public void fillTable(String name, String price) {
+    public void fillTable(final String name, String price) {
         try {
             final TableRow tr = new TableRow(view.getContext());
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -117,7 +121,7 @@ public class InventoryFragment extends Fragment {
 
                     final Dialog dialog=new Dialog(view.getContext());
                     dialog.setContentView(R.layout.productdialog);
-                    EditText productName=(EditText)dialog.findViewById(R.id.productName);
+                    final EditText productName=(EditText)dialog.findViewById(R.id.productName);
                     final EditText productQuantity=(EditText)dialog.findViewById(R.id.productQty);
                     Button btn_close=(Button)dialog.findViewById(R.id.buttonClose);
                     Button btn_done=(Button)dialog.findViewById(R.id.buttonDone);
@@ -135,9 +139,24 @@ public class InventoryFragment extends Fragment {
                             public void onClick(View v) {
                                 Id_prod++;
                                 dialogQuantity=Float.parseFloat(String.valueOf(productQuantity.getText()))*Float.parseFloat(String.valueOf(tv_unitprice.getText()));
-                                //Toast.makeText(dialog.getContext(), String.valueOf(dialogQuantity), Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                                prodName= String.valueOf(productName.getText());
+                                prodPrice=String.valueOf(dialogQuantity);
+                                prodQty=String.valueOf(productQuantity.getText());
                                 new insertSales().execute();
+                                dialog.dismiss();
+
+                                try {
+                                    Bundle bundle=new Bundle();
+                                    bundle.putString("Qty",prodName);
+                                    bundle.putString("Name",prodPrice);
+                                    SalesFragment salesFragment=new SalesFragment();
+                                    salesFragment.setArguments(bundle);
+                                    getFragmentManager().beginTransaction().add(R.id.sales_frag,salesFragment).commit();
+
+                                  //  Toast.makeText(dialog.getContext(), String.valueOf(dialogQuantity), Toast.LENGTH_SHORT).show();
+                                }catch (Exception e){
+                                    Log.e("TAG",e.getMessage());
+                                }
                             }
                         });
                         dialog.show();
@@ -165,6 +184,7 @@ public class InventoryFragment extends Fragment {
             final DbHelper dbHelper = new DbHelper(view.getContext());
             for (int i = 0; i < dbHelper.getInventory().size(); i++) {
                 fillTable(dbHelper.getInventory().get(i).getNAME(), String.valueOf(dbHelper.getInventory().get(i).getUNITPRICE()));
+
             }
         }
     }
@@ -180,7 +200,8 @@ public class InventoryFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             DbHelper dbHelper = new DbHelper(view.getContext());
-            dbHelper.insertProducts(Id,prodName, prodPrice);
+         //   Toast.makeText(getContext(), inventoryName+","+ inventoryPrice, Toast.LENGTH_SHORT).show();
+            dbHelper.insertProducts(Id,inventoryName, inventoryPrice);
         }
     }
 
@@ -195,7 +216,8 @@ public class InventoryFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             DbHelper dbHelper = new DbHelper(view.getContext());
-            dbHelper.insertSales(Id_prod,prodName, String.valueOf(dialogQuantity));
+            //Toast.makeText(getContext(), prodName+" "+prodPrice, Toast.LENGTH_SHORT).show();
+            dbHelper.insertSales(Id_prod,prodName,prodQty, prodPrice);
         }
     }
 

@@ -46,7 +46,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:hint="Quantity"
             android:layout_marginLeft="20dp"
             android:width="150dp"

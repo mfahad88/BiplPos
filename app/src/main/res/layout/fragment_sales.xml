@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/sales_frag"
     tools:context="layout.SalesFragment">
 
 
@@ -27,6 +28,7 @@
         android:textStyle="bold"
         android:id="@+id/textTotal"/>
 
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="25dp"
@@ -45,7 +47,7 @@
                 android:text="Name"
                 android:gravity="center_horizontal|center_vertical"
                 android:textSize="15sp"
-                android:width="150dp"
+                android:width="130dp"
                 />
 
             <TextView
@@ -54,7 +56,7 @@
                 android:text="Quantity"
                 android:gravity="center_horizontal|center_vertical"
                 android:textSize="15sp"
-                android:width="100dp"
+                android:width="90dp"
                 />
 
             <TextView
@@ -63,7 +65,8 @@
                 android:text="Unit Price"
                 android:gravity="center_horizontal|center_vertical"
                 android:textSize="15sp"
-                android:width="105dp"/>
+                android:width="165dp"
+                android:id="@+id/textView2" />
         </TableRow>
 
     </TableLayout>
@@ -91,16 +94,27 @@
         android:width="130dp"
         android:hapticFeedbackEnabled="false" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="376dp"
-        android:layout_marginTop="100dp">
 
-        <TableLayout
+        <ScrollView
+            android:layout_marginTop="100dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tableOrder"/>
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:id="@+id/scrollViewSales"
+            android:layout_marginBottom="80dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/linearLayoutSales">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tableOrder"/>
+            </LinearLayout>
+        </ScrollView>
+
 
 
 </FrameLayout>

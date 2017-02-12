@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +25,18 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         String sql="CREATE TABLE IF NOT EXISTS inv_tbl (ID INTEGER, NAME text, UNITPRICE REAL)";
-        String sql2="CREATE TABLE IF NOT EXISTS sales_tbl (ID integer, NAME text, UNITPRICE REAL)";
+        String sql2="CREATE TABLE IF NOT EXISTS sales_tbl (ID integer, NAME text,QTY REAL, AMOUNT REAL)";
+
         db.execSQL(sql);
         db.execSQL(sql2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE IF EXISTS sales_tbl");
+        onCreate(db);
     }
 
     public void insertProducts(int Id,String NAME,String UNITPRICE){
@@ -74,34 +75,36 @@ public class DbHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public List<ProductBean> insertSales(int Id,String NAME,String amount){
-        List<ProductBean> list=new ArrayList<>();
+    public void insertSales(int Id,String NAME,String Qty,String amount){
+
         try{
 
             SQLiteDatabase db=this.getWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("ID", Id);
             contentValues.put("NAME", NAME);
-            contentValues.put("UNITPRICE", Float.parseFloat(amount));
+            contentValues.put("QTY", Float.parseFloat(Qty));
+            contentValues.put("AMOUNT", Float.parseFloat(amount));
             db.insert("sales_tbl", null, contentValues);
             db.close();
         }catch (Exception e){
             e.getMessage();
         }
-        return list;
+
     }
 
     public List<SalesBean> getSales(){
         List<SalesBean> list=new ArrayList<>();
         try{
-            String sql="SELECT * FROM inv_tbl";
+            String sql="SELECT * FROM sales_tbl";
             SQLiteDatabase db=this.getReadableDatabase();
             Cursor rs=db.rawQuery(sql,null);
             rs.moveToFirst();
             while(!rs.isAfterLast()){
                 SalesBean salesBean=new SalesBean();
                 salesBean.setName(rs.getString(1));
-                salesBean.setTotalAmount(rs.getInt(2));
+                salesBean.setQty(rs.getFloat(2));
+                salesBean.setTotalAmount(rs.getFloat(3));
                 list.add(salesBean);
                 rs.moveToNext();
             }

@@ -6,7 +6,8 @@ package data;
 
 public class SalesBean {
     private String Name;
-    private float  totalAmount;
+    private float totalAmount;
+    private float Qty;
 
     public String getName() {
         return Name;
@@ -22,5 +23,13 @@ public class SalesBean {
 
     public void setTotalAmount(float totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public float getQty() {
+        return Qty;
+    }
+
+    public void setQty(float qty) {
+        Qty = qty;
     }
 }
