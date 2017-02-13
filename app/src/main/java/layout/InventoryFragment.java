@@ -20,12 +20,13 @@ import android.widget.Toast;
 
 import com.example.bipl.biplpos.DbHelper;
 import com.example.bipl.biplpos.R;
+import com.example.bipl.biplpos.UpdatableFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InventoryFragment extends Fragment {
+public class InventoryFragment extends UpdatableFragment {
     EditText name, unitPrice;
     Button btn_done;
     TableLayout tableLayout;
@@ -37,12 +38,12 @@ public class InventoryFragment extends Fragment {
     View view;
     private int Id=0;
     private int Id_prod=0;
-    public InventoryFragment() {
+    UpdatableFragment salesFragment;
+    public InventoryFragment(UpdatableFragment salesFragment) {
         // Required empty public constructor
+        this.salesFragment=salesFragment;
     }
-    public static InventoryFragment newInstance() {
-        return new InventoryFragment();
-    }
+
 
 
 
@@ -72,6 +73,7 @@ public class InventoryFragment extends Fragment {
                         fillTable(inventoryName,inventoryPrice);
                         Id++;
                         new insertRecords().execute();
+
                     } catch (Exception e) {
                         Log.e("TAG", e.getMessage());
                     }
@@ -116,9 +118,6 @@ public class InventoryFragment extends Fragment {
                     int rowCount=(int)tr.getTag();
                     TextView tv=(TextView)tr.getChildAt(0);
                     final TextView tv_unitprice=(TextView)tr.getChildAt(1);
-
-                   // Toast.makeText(view.getContext(), String.valueOf(tv_unitprice.getText()), Toast.LENGTH_SHORT).show();
-
                     final Dialog dialog=new Dialog(view.getContext());
                     dialog.setContentView(R.layout.productdialog);
                     final EditText productName=(EditText)dialog.findViewById(R.id.productName);
@@ -143,20 +142,8 @@ public class InventoryFragment extends Fragment {
                                 prodPrice=String.valueOf(dialogQuantity);
                                 prodQty=String.valueOf(productQuantity.getText());
                                 new insertSales().execute();
+                                salesFragment.update();
                                 dialog.dismiss();
-
-                                try {
-                                    Bundle bundle=new Bundle();
-                                    bundle.putString("Qty",prodName);
-                                    bundle.putString("Name",prodPrice);
-                                    SalesFragment salesFragment=new SalesFragment();
-                                    salesFragment.setArguments(bundle);
-                                    getFragmentManager().beginTransaction().add(R.id.sales_frag,salesFragment).commit();
-
-                                  //  Toast.makeText(dialog.getContext(), String.valueOf(dialogQuantity), Toast.LENGTH_SHORT).show();
-                                }catch (Exception e){
-                                    Log.e("TAG",e.getMessage());
-                                }
                             }
                         });
                         dialog.show();
@@ -169,6 +156,10 @@ public class InventoryFragment extends Fragment {
         } catch (Exception e) {
             Log.e("TAG", e.getMessage());
         }
+    }
+
+    @Override
+    public void update() {
     }
 
     private class getRecords extends AsyncTask<Void, Void, Void> {
@@ -200,7 +191,6 @@ public class InventoryFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             DbHelper dbHelper = new DbHelper(view.getContext());
-         //   Toast.makeText(getContext(), inventoryName+","+ inventoryPrice, Toast.LENGTH_SHORT).show();
             dbHelper.insertProducts(Id,inventoryName, inventoryPrice);
         }
     }
@@ -216,7 +206,6 @@ public class InventoryFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             DbHelper dbHelper = new DbHelper(view.getContext());
-            //Toast.makeText(getContext(), prodName+" "+prodPrice, Toast.LENGTH_SHORT).show();
             dbHelper.insertSales(Id_prod,prodName,prodQty, prodPrice);
         }
     }

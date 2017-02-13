@@ -72,10 +72,10 @@
     </TableLayout>
 
     <Button
-        android:text="@string/clear"
+        android:text="QR reader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonClear"
+        android:id="@+id/buttonQR"
         android:background="@drawable/roundbtnred"
         android:layout_gravity="bottom|left"
         android:layout_marginLeft="30dp"
@@ -83,10 +83,10 @@
         android:layout_marginBottom="10dp"/>
 
     <Button
-        android:text="@string/done"
+        android:text="FingerScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonDone"
+        android:id="@+id/buttonFinger"
         android:background="@drawable/roundbtngreen"
         android:layout_gravity="bottom|right"
         android:layout_marginRight="30dp"

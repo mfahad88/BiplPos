@@ -1,11 +1,13 @@
 package com.example.bipl.biplpos;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,8 @@ import layout.SalesFragment;
 public class SelectionActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ViewPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +40,15 @@ public class SelectionActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new InventoryFragment(), "Inventory");
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        /*adapter.addFragment(new InventoryFragment(), "Inventory");
         adapter.addFragment(new SalesFragment(), "Sales");
-        adapter.addFragment(new ReportFragment(), "Report");
+        adapter.addFragment(new ReportFragment(), "Report");*/
         viewPager.setAdapter(adapter);
     }
 
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+   /* class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -71,5 +75,51 @@ public class SelectionActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }*/
+
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
+        private UpdatableFragment[] fragments;
+        private String[] fragmentNames;
+
+
+        public ViewPagerAdapter(FragmentManager fragmentManager) {
+
+            super(fragmentManager);
+
+            UpdatableFragment reportFragment = new ReportFragment();
+            UpdatableFragment saleFragment = new SalesFragment(reportFragment);
+            UpdatableFragment inventoryFragment = new InventoryFragment(saleFragment);
+
+            fragments = new UpdatableFragment[] { inventoryFragment, saleFragment,
+                    reportFragment };
+            fragmentNames = new String[] { "Inventory", "Sales", "Report" };
+
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return fragments[i];
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int i) {
+            return fragmentNames[i];
+        }
+
+        /**
+         * Update
+         * @param index
+         */
+        public void update(int index) {
+            fragments[index].update();
+        }
+
     }
+
 }

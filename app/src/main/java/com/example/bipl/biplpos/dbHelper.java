@@ -115,4 +115,21 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         return list;
     }
+    
+    public double totalSales(){
+        double total = 0.00;
+        try{
+            String sql="SELECT sum(AMOUNT) FROM sales_tbl";
+            SQLiteDatabase db=this.getReadableDatabase();
+            Cursor rs=db.rawQuery(sql,null);
+            rs.moveToFirst();
+            while(!rs.isAfterLast()){
+                total=rs.getDouble(0);
+                rs.moveToNext();
+            }
+        }catch (Exception e){
+            Log.e("TOTAL SUM: ",e.getMessage());
+        }
+        return total;
+    }
 }

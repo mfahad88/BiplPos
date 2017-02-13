@@ -8,11 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bipl.biplpos.R;
+import com.example.bipl.biplpos.UpdatableFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ReportFragment extends Fragment {
+public class ReportFragment extends UpdatableFragment {
 
 
     public ReportFragment() {
@@ -27,4 +28,8 @@ public class ReportFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_report, container, false);
     }
 
+    @Override
+    public void update() {
+        
+    }
 }
