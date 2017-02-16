@@ -1,4 +1,4 @@
-package layout;
+package com.example.bipl.biplpos.ui;
 
 
 import android.app.Dialog;
@@ -20,11 +20,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.example.bipl.biplpos.CameraPreview;
 import com.example.bipl.biplpos.boc.SalesFragmentBOC;
-import com.example.bipl.biplpos.dao.DbHelper;
 import com.example.bipl.biplpos.R;
-import com.example.bipl.biplpos.UpdatableFragment;
 
 /**
  * A simple {@link Fragment} subclass.

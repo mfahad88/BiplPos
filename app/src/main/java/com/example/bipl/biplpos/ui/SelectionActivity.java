@@ -1,26 +1,14 @@
-package layout;
+package com.example.bipl.biplpos.ui;
 
-import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.bipl.biplpos.R;
-import com.example.bipl.biplpos.UpdatableFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import layout.InventoryFragment;
-import layout.ReportFragment;
-import layout.SalesFragment;
 
 /**
  * Created by fahad on 2/9/2017.

@@ -1,4 +1,4 @@
-package layout;
+package com.example.bipl.biplpos.ui;
 
 import android.app.Dialog;
 import android.os.AsyncTask;
@@ -16,7 +16,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import com.example.bipl.biplpos.boc.InventoryFragmentBOC;
 import com.example.bipl.biplpos.R;
-import com.example.bipl.biplpos.UpdatableFragment;
 
 
 /**

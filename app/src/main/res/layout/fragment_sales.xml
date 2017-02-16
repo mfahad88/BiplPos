@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/sales_frag"
-    tools:context="layout.SalesFragment">
+    tools:context=".ui.SalesFragment">
 
 
     <TextView

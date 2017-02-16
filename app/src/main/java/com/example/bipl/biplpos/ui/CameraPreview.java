@@ -1,4 +1,4 @@
-package com.example.bipl.biplpos;
+package com.example.bipl.biplpos.ui;
 
 /**
  * Created by fahad on 2/13/2017.

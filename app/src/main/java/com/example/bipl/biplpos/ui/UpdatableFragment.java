@@ -1,4 +1,4 @@
-package com.example.bipl.biplpos;
+package com.example.bipl.biplpos.ui;
 
 import android.support.v4.app.Fragment;
 

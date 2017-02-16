@@ -1,4 +1,4 @@
-package layout;
+package com.example.bipl.biplpos.ui;
 
 
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bipl.biplpos.R;
-import com.example.bipl.biplpos.UpdatableFragment;
 
 /**
  * A simple {@link Fragment} subclass.
