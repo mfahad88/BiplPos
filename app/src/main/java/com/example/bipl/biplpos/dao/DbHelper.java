@@ -1,4 +1,4 @@
-package com.example.bipl.biplpos;
+package com.example.bipl.biplpos.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.ProductBean;
-import data.SalesBean;
+import com.example.bipl.biplpos.data.ProductBean;
+import com.example.bipl.biplpos.data.SalesBean;
 
 /**
  * Created by fahad on 2/10/2017.

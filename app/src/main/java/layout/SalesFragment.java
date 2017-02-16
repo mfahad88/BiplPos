@@ -2,12 +2,10 @@ package layout;
 
 
 import android.app.Dialog;
-import android.content.Context;
+import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,9 +19,10 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.bipl.biplpos.DbHelper;
+import com.example.bipl.biplpos.CameraPreview;
+import com.example.bipl.biplpos.boc.SalesFragmentBOC;
+import com.example.bipl.biplpos.dao.DbHelper;
 import com.example.bipl.biplpos.R;
 import com.example.bipl.biplpos.UpdatableFragment;
 
@@ -41,6 +40,8 @@ public class SalesFragment extends UpdatableFragment{
     TextView name_tv,unit_tv,qty_tv;
     Button btn_finger,btn_qr;
     UpdatableFragment reportFragment;
+    private Camera mCamera;
+    private CameraPreview mPreview;
 
     public SalesFragment(UpdatableFragment reportFragment) {
         // Required empty public constructor
@@ -69,7 +70,14 @@ public class SalesFragment extends UpdatableFragment{
         btn_finger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showpopup();
+               // showpopup();
+                try {
+                    mCamera= Camera.open();
+                    mPreview=new CameraPreview(getContext(),mCamera);
+                }catch (Exception e){
+                    Log.e("Error",e.getMessage());
+                }
+
             }
         });
         return view;
@@ -128,9 +136,13 @@ public class SalesFragment extends UpdatableFragment{
 
     @Override
     public void update() {
-        DbHelper dbHelper=new DbHelper(getContext());
-        totalAmount.setText(String.valueOf(dbHelper.totalSales()));
-        new getProduct().execute();
+        try {
+            SalesFragmentBOC boc = new SalesFragmentBOC();
+            totalAmount.setText(String.valueOf(boc.totalSales(getContext())));
+            new getProduct().execute();
+        }catch (Exception e){
+            Log.e("Error",e.getMessage());
+        }
     }
 
 
@@ -144,11 +156,10 @@ public class SalesFragment extends UpdatableFragment{
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            DbHelper dbHelper=new DbHelper(view.getContext());
+            SalesFragmentBOC boc=new SalesFragmentBOC();
 
-           for(int i=0;i<dbHelper.getSales().size();i++) {
-                fillTable(dbHelper.getSales().get(i).getName(),String.valueOf(dbHelper.getSales().get(i).getQty()), String.valueOf(dbHelper.getSales().get(i).getTotalAmount()));
-               Log.e("TAG",dbHelper.getSales().get(i).getName()+" "+String.valueOf(dbHelper.getSales().get(i).getQty())+" "+String.valueOf(dbHelper.getSales().get(i).getTotalAmount()));
+           for(int i=0;i<boc.getSales(getContext()).size();i++) {
+                fillTable(boc.getSales(getContext()).get(i).getName(),String.valueOf(boc.getSales(getContext()).get(i).getQty()), String.valueOf(boc.getSales(getContext()).get(i).getTotalAmount()));
             }
 
         }

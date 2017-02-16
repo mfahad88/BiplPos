@@ -1,6 +1,5 @@
-package com.example.bipl.biplpos;
+package layout;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,25 +8,21 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import static com.example.bipl.biplpos.R.string.password;
-import static com.example.bipl.biplpos.R.string.username;
+import com.example.bipl.biplpos.R;
+import com.example.bipl.biplpos.boc.MainActivityBOC;
 
 public class MainActivity extends AppCompatActivity {
     private EditText user,pass;
     private Button btn_login;
     private ProgressDialog dialog;
+    private String username,password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                username=user.getText().toString();
+                password=pass.getText().toString();
                 new loginTask().execute();
             }
         });
@@ -60,19 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-
-            String username= user.getText().toString();
-            String password= pass.getText().toString();
-            boolean status=false;
-
-            if(username.equals("admin") && password.equals("123")){
-                status=true;
-            }else{
-                status=false;
-            }
-
-            return status;
+            MainActivityBOC mainActivityBOC=new MainActivityBOC(username,password);
+            return mainActivityBOC.logIn();
         }
 
            @Override

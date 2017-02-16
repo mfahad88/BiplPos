@@ -1,4 +1,4 @@
-package data;
+package com.example.bipl.biplpos.data;
 
 /**
  * Created by fahad on 2/10/2017.

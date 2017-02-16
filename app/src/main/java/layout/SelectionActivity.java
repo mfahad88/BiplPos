@@ -1,4 +1,4 @@
-package com.example.bipl.biplpos;
+package layout;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.bipl.biplpos.R;
+import com.example.bipl.biplpos.UpdatableFragment;
 
 import java.util.ArrayList;
 import java.util.List;

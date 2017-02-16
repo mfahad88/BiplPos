@@ -1,11 +1,9 @@
 package layout;
 
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,9 +14,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.bipl.biplpos.DbHelper;
+import com.example.bipl.biplpos.boc.InventoryFragmentBOC;
 import com.example.bipl.biplpos.R;
 import com.example.bipl.biplpos.UpdatableFragment;
 
@@ -115,7 +111,7 @@ public class InventoryFragment extends UpdatableFragment {
             tr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int rowCount=(int)tr.getTag();
+                    //int rowCount=(int)tr.getTag();
                     TextView tv=(TextView)tr.getChildAt(0);
                     final TextView tv_unitprice=(TextView)tr.getChildAt(1);
                     final Dialog dialog=new Dialog(view.getContext());
@@ -137,9 +133,8 @@ public class InventoryFragment extends UpdatableFragment {
                             @Override
                             public void onClick(View v) {
                                 Id_prod++;
-                                dialogQuantity=Float.parseFloat(String.valueOf(productQuantity.getText()))*Float.parseFloat(String.valueOf(tv_unitprice.getText()));
                                 prodName= String.valueOf(productName.getText());
-                                prodPrice=String.valueOf(dialogQuantity);
+                                prodPrice=String.valueOf(Float.parseFloat(String.valueOf(productQuantity.getText()))*Float.parseFloat(String.valueOf(tv_unitprice.getText())));
                                 prodQty=String.valueOf(productQuantity.getText());
                                 new insertSales().execute();
                                 salesFragment.update();
@@ -172,10 +167,9 @@ public class InventoryFragment extends UpdatableFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            final DbHelper dbHelper = new DbHelper(view.getContext());
-            for (int i = 0; i < dbHelper.getInventory().size(); i++) {
-                fillTable(dbHelper.getInventory().get(i).getNAME(), String.valueOf(dbHelper.getInventory().get(i).getUNITPRICE()));
-
+            InventoryFragmentBOC boc=new InventoryFragmentBOC();
+            for(int i=0;i<boc.getInventory(getContext()).size();i++){
+                fillTable(boc.getInventory(getContext()).get(i).getNAME(),String.valueOf(boc.getInventory(getContext()).get(i).getUNITPRICE()));
             }
         }
     }
@@ -190,8 +184,8 @@ public class InventoryFragment extends UpdatableFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            DbHelper dbHelper = new DbHelper(view.getContext());
-            dbHelper.insertProducts(Id,inventoryName, inventoryPrice);
+            InventoryFragmentBOC inventoryFragmentBOC=new InventoryFragmentBOC();
+            inventoryFragmentBOC.insertInventory(getContext(),Id,inventoryName,inventoryPrice);
         }
     }
 
@@ -205,8 +199,8 @@ public class InventoryFragment extends UpdatableFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            DbHelper dbHelper = new DbHelper(view.getContext());
-            dbHelper.insertSales(Id_prod,prodName,prodQty, prodPrice);
+            InventoryFragmentBOC inventoryFragmentBOC=new InventoryFragmentBOC();
+            inventoryFragmentBOC.insertSales(getContext(),Id_prod,prodName,prodQty,prodPrice);
         }
     }
 
