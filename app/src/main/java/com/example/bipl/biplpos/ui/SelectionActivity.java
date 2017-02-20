@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.bipl.biplpos.R;
 
@@ -35,6 +36,7 @@ public class SelectionActivity extends AppCompatActivity {
         /*adapter.addFragment(new InventoryFragment(), "Inventory");
         adapter.addFragment(new SalesFragment(), "Sales");
         adapter.addFragment(new ReportFragment(), "Report");*/
+
         viewPager.setAdapter(adapter);
     }
 

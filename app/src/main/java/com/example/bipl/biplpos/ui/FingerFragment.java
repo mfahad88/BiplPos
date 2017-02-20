@@ -1,18 +1,18 @@
 package com.example.bipl.biplpos.ui;
 
-
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,31 +20,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bipl.biplpos.boc.SalesFragmentBOC;
 import com.example.bipl.biplpos.R;
-import com.nurugo.api.*;
+import com.nurugo.api.NurugoBSP;
+
+import static android.content.ContentValues.TAG;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by fahad on 2/17/2017.
  */
-public class SalesFragment extends UpdatableFragment{
-    TextView totalAmount;
-    View view;
-    TableLayout tableLayout;
-    FrameLayout frag;
-    ScrollView scrollView;
-    LinearLayout linearLayout;
-    TableRow tr;
-    TextView name_tv,unit_tv,qty_tv;
-    Button btn_finger,btn_qr;
-    UpdatableFragment reportFragment;
+
+public class FingerFragment extends DialogFragment {
     static Camera mCamera;
     CameraPreview mCameraPreview;
     FrameLayout mFrameLayout;
@@ -53,16 +41,9 @@ public class SalesFragment extends UpdatableFragment{
     ImageView img_current;
     Bitmap bm;
     static boolean isCapturing = false;
-    Dialog dialog;
+    View view;
 
-    public SalesFragment(UpdatableFragment reportFragment) {
-        // Required empty public constructor
-        super();
-        this.reportFragment=reportFragment;
-    }
 
-    public SalesFragment() {
-    }
 
     static Camera getCameraInstance(){
 
@@ -74,14 +55,42 @@ public class SalesFragment extends UpdatableFragment{
     }
 
     void init(){
+
+        img_current = (ImageView)view.findViewById(R.id.img_current);
+
         img_current.setImageBitmap(null);
-        btn_enroll.setEnabled(true);
+
 
         if(mCamera!=null)
             mCamera.setPreviewCallback(null);
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().getWindow().setLayout(600,900);
+        init();
+        initCamera();
+
+    }
+
+    /* (non-Javadoc)
+     * @see android.app.Activity#onPause()
+     */
+    @Override
+    public void onPause() {
+
+
+        super.onPause();
+        releaseCamera();
+        System.exit(0);
+    }
+
+    /**
+     * Camera release
+     * void
+     */
     public void releaseCamera(){
 
         mCameraPreview.getHolder().removeCallback(mCameraPreview);
@@ -93,144 +102,116 @@ public class SalesFragment extends UpdatableFragment{
 
     }
 
+    /**
+     * camera initialize
+     */
     public void initCamera(){
 
         mCamera = getCameraInstance();
-        mCameraPreview = new CameraPreview(view.getContext(), mCamera);
+        mCameraPreview = new CameraPreview(getContext(), mCamera);
         mFrameLayout.addView(mCameraPreview);
-
         nurugoBSP.initCameraParam(mCamera);
 
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view=inflater.inflate(R.layout.fragment_sales, container, false);
-        frag=(FrameLayout)view.findViewById(R.id.sales_frag);
-        totalAmount=(TextView)view.findViewById(R.id.textTotal);
-        tableLayout=(TableLayout)view.findViewById(R.id.tableOrder);
-        scrollView=(ScrollView)view.findViewById(R.id.scrollViewSales);
-        linearLayout=(LinearLayout)view.findViewById(R.id.linearLayoutSales);
-        btn_finger=(Button)view.findViewById(R.id.buttonFinger);
-        btn_qr=(Button)view.findViewById(R.id.buttonQR);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //frag.addView(totalAmount);
-        new getProduct().execute();
-        btn_finger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
 
-                    FingerFragment newFragment = new FingerFragment();
-                    newFragment.show(getFragmentManager(),"dialog");
+        try {
+            view=inflater.inflate(R.layout.fingerdialog,container,false);
+            mFrameLayout = (FrameLayout)view.findViewById(R.id.camera_preview);
 
-                }catch (Exception e){
-                    Log.e("Finger Dialog",e.getMessage());
-                }
+            nurugoBSP = new NurugoBSP();
 
+            NurugoBSP.InfoData infoData = nurugoBSP.new InfoData();
+            final int ret = nurugoBSP.init(infoData);
+            try {
+            /*    getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(view.getContext(),"Place your finger",Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+
+            }catch (Exception e){
+                Log.e(TAG,e.getMessage());
             }
-        });
+
+
+            new captureTask().execute();
+
+
+        }catch (Exception e){
+            Log.e("Error",e.getMessage());
+        }
+
         return view;
     }
 
 
-    public void fillTable(String name, String price,String qty){
 
-        tr = new TableRow(view.getContext());
-
-        name_tv = new TextView(view.getContext());
-        unit_tv = new TextView(view.getContext());
-        qty_tv = new TextView(view.getContext());
-        name_tv.setText(String.valueOf(name));
-        unit_tv.setText(String.valueOf(price));
-        qty_tv.setText(String.valueOf(qty));
-        name_tv.setTextSize((float) 20.0);
-        unit_tv.setTextSize((float) 20.0);
-        qty_tv.setTextSize((float) 20.0);
-        name_tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        unit_tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        qty_tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        TableRow.LayoutParams name_params=new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        TableRow.LayoutParams unit_params=new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        TableRow.LayoutParams qty_params=new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        name_params.setMargins(70,0,70,0);
-        unit_params.setMargins(60,0,60,0);
-        qty_params.setMargins(130,0,130,0);
-        name_tv.setLayoutParams(name_params);
-        unit_tv.setLayoutParams(unit_params);
-        qty_tv.setLayoutParams(qty_params);
-        tr.addView(name_tv);
-        tr.addView(unit_tv);
-        tr.addView(qty_tv);
-        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
-    }
-
-    /*public void showpopup(){
-        dialog.setContentView(R.layout.fingerdialog);
-        mFrameLayout = (FrameLayout)dialog.findViewById(R.id.camera_preview);
-        btn_enroll = (Button)dialog.findViewById(R.id.btn_enroll);
-        img_current = (ImageView)dialog.findViewById(R.id.img_current);
-
-        nurugoBSP = new NurugoBSP();
-        NurugoBSP.InfoData infoData = nurugoBSP.new InfoData();
-        final int ret = nurugoBSP.init(infoData);
-        if(!isCapturing){
-            isCapturing = true;
-
-
-            mCamera.setPreviewCallback(mPreviewCallback);
-
-        }
-        dialog.show();
-    }*/
-
-    Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
+    PreviewCallback mPreviewCallback = new PreviewCallback() {
 
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             try {
+
                 enroll(data);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.e("Error",e.getMessage());
             }
 
         }
     };
 
     void enroll(byte[] data) throws Exception {
+        try {
 
-        int ret = -1;
+            int ret = -1;
 
-        byte[] outRaw = nurugoBSP.extractYuvToRaw(data, 1);
+            byte[] outRaw = nurugoBSP.extractYuvToRaw(data, 1);
 
-        bm = nurugoBSP.extractRawToBitmap(outRaw);
+            bm = nurugoBSP.extractRawToBitmap(outRaw);
 
-        new Handler().post(new Runnable() {
+            new Handler().post(new Runnable() {
 
-            @Override
-            public void run() {
+                @Override
+                public void run() {
 
-                img_current.setImageBitmap(bm);
+                    img_current.setImageBitmap(bm);
+                }
+            });
+            ret = nurugoBSP.getErrorCode();
+            if(ret!=0){
+                Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
+                Camera.Parameters p = mCamera.getParameters();
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                mCamera.setParameters(p);
+                mCamera.release();
+                getDialog().hide();
+             /*   Intent i=new Intent(getActivity(),SelectionActivity.class);
+                i.putExtra("ReturnFinger",true);
+                startActivity(i);*/
+
+                isCapturing=false;
+                releaseCamera();
+                onResume();
+            }else{
+                Toast.makeText(getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
+                isCapturing=false;
+                releaseCamera();
+                onResume();
             }
-        });
-        ret =  nurugoBSP.getErrorCode();
-        if(ret!=0){
-            Toast.makeText(dialog.getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
-            isCapturing=false;
-            releaseCamera();
-            onResume();
-        }else{
-            Toast.makeText(dialog.getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
-            isCapturing=false;
-            releaseCamera();
-            onResume();
+
+        }catch (Exception e){
+            Log.e("Error",e.getMessage());
         }
 
     }
+
 
     String getErrorMessage(int errorCode){
 
@@ -343,20 +324,7 @@ public class SalesFragment extends UpdatableFragment{
         return errorMessage;
 
     }
-
-    @Override
-    public void update() {
-        try {
-            SalesFragmentBOC boc = new SalesFragmentBOC();
-            totalAmount.setText(String.valueOf(boc.totalSales(getContext())));
-            new getProduct().execute();
-        }catch (Exception e){
-            Log.e("Error",e.getMessage());
-        }
-    }
-
-
-    public class getProduct extends AsyncTask<Void,Void,Void>{
+    private class captureTask extends AsyncTask<Void,Void,Void>{
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -366,13 +334,7 @@ public class SalesFragment extends UpdatableFragment{
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            SalesFragmentBOC boc=new SalesFragmentBOC();
-
-           for(int i=0;i<boc.getSales(getContext()).size();i++) {
-                fillTable(boc.getSales(getContext()).get(i).getName(),String.valueOf(boc.getSales(getContext()).get(i).getQty()), String.valueOf(boc.getSales(getContext()).get(i).getTotalAmount()));
-            }
-
+            mCamera.setPreviewCallback(mPreviewCallback);
         }
     }
-
 }

@@ -9,66 +9,102 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.io.IOException;
 
 /** A basic Camera preview class */
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback{
+
+    private static final String TAG = "CameraPreview";
+
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    Context mContext;
+
+
 
     public CameraPreview(Context context, Camera camera) {
-        super(context);
-        mCamera = camera;
 
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
+        super(context);
+        mContext = context;
+        mCamera = camera;
         mHolder = getHolder();
         mHolder.addCallback(this);
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        // 3.0 ÀÌÀü ¹öÀü¸¸
+//		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-    public void surfaceCreated(SurfaceHolder holder) {
-        // The Surface has been created, now tell the camera where to draw the preview.
-        try {
-            mCamera.setPreviewDisplay(holder);
-            mCamera.startPreview();
-        } catch (IOException e) {
-            Log.d("TAG", "Error setting camera preview: " + e.getMessage());
-        }
+    /* (non-Javadoc)
+     * @see android.view.SurfaceHolder.Callback#surfaceChanged(android.view.SurfaceHolder, int, int, int)
+     */
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                               int height) {
+
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        // empty. Take care of releasing the Camera preview in your activity.
-    }
+    public void stopPreview(){
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // If your preview can change or rotate, take care of those events here.
-        // Make sure to stop the preview before resizing or reformatting it.
-
-        if (mHolder.getSurface() == null){
-            // preview surface does not exist
+        if(mHolder.getSurface()==null){
             return;
         }
 
-        // stop preview before making changes
-        try {
+        try{
             mCamera.stopPreview();
-        } catch (Exception e){
-            // ignore: tried to stop a non-existent preview
+        }catch(Exception e){
+            e.printStackTrace();
         }
 
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
+    }
 
-        // start preview with new settings
-        try {
+    public void startPreview(){
+
+        if(mHolder.getSurface()==null){
+            return;
+        }
+
+        try{
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
-
-        } catch (Exception e){
-            Log.d("TAG", "Error starting camera preview: " + e.getMessage());
+        }catch(Exception e){
+            e.printStackTrace();
         }
+
     }
+
+
+    /* (non-Javadoc)
+     * @see android.view.SurfaceHolder.Callback#surfaceCreated(android.view.SurfaceHolder)
+     */
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        startPreview();
+    }
+
+    /* (non-Javadoc)
+     * @see android.view.SurfaceHolder.Callback#surfaceDestroyed(android.view.SurfaceHolder)
+     */
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+        try{
+            if(mCamera!=null)
+                mCamera.stopPreview();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /* (non-Javadoc)
+     * @see android.view.SurfaceView#onMeasure(int, int)
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec), View.MeasureSpec.getSize(heightMeasureSpec));
+
+    }
+
 }

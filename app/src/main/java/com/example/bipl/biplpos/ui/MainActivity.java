@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         pass=(EditText)findViewById(R.id.editTextPass);
         btn_login=(Button)findViewById(R.id.buttonLogin);
         dialog=new ProgressDialog(MainActivity.this);
-
+        user.setText("admin");
+        pass.setText("123");
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
