@@ -34,6 +34,7 @@ public class InventoryFragment extends UpdatableFragment {
     private int Id=0;
     private int Id_prod=0;
     UpdatableFragment salesFragment;
+
     public InventoryFragment(UpdatableFragment salesFragment) {
         // Required empty public constructor
         this.salesFragment=salesFragment;
