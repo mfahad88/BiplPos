@@ -1,5 +1,7 @@
 package com.example.bipl.biplpos.ui;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -126,6 +128,7 @@ public class FingerFragment extends DialogFragment {
 
         try {
             view=inflater.inflate(R.layout.fingerdialog,container,false);
+            getDialog().setTitle("Scanning...");
             mFrameLayout = (FrameLayout)view.findViewById(R.id.camera_preview);
 
             nurugoBSP = new NurugoBSP();
@@ -185,18 +188,21 @@ public class FingerFragment extends DialogFragment {
                            p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                            mCamera.setParameters(p);
                            mCamera.release();
+
                            getDialog().hide();
                            Intent i = new Intent(getActivity(), SelectionActivity.class);
                            i.putExtra("ReturnFinger", true);
                            startActivity(i);
                            isCapturing=false;
                            releaseCamera();
-                           //onResume();
-                           onDestroy();
+
+                           onResume();
+                        //   onDestroy();
                        } else{
                            Toast.makeText(getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
                            isCapturing=false;
                            releaseCamera();
+                           //showpaymentDialog();
                            //onResume();
                        }
                    }
@@ -344,4 +350,6 @@ public class FingerFragment extends DialogFragment {
             Log.e(TAG,e.getMessage());
         }
     }
+
+
 }

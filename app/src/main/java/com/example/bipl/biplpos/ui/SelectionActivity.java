@@ -1,5 +1,7 @@
 package com.example.bipl.biplpos.ui;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.bipl.biplpos.R;
@@ -37,9 +41,29 @@ public class SelectionActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         if(getIntent().getBooleanExtra("ReturnFinger",false)){
             viewPager.setCurrentItem(1);
+            showpaymentDialog(this);
         }
     }
 
+    public void showpaymentDialog(Context context){
+        Dialog dialog=new Dialog(context);
+        dialog.setContentView(R.layout.fragment_payment);
+        EditText paymentAmount=(EditText)dialog.findViewById(R.id.editTextAmount);
+        EditText cardName=(EditText)dialog.findViewById(R.id.editTextName);
+        EditText cardNo=(EditText)dialog.findViewById(R.id.editTextCardno);
+        EditText loyalityPoints=(EditText)dialog.findViewById(R.id.editTextLoyality);
+        EditText worth=(EditText)dialog.findViewById(R.id.editTextWorth);
+        EditText otp=(EditText)dialog.findViewById(R.id.editTextOTP);
+        Button btn_loyality=(Button)dialog.findViewById(R.id.buttonLoyality);
+        Button btn_account=(Button)dialog.findViewById(R.id.buttonAccount);
+        dialog.setTitle("Payment...");
+        paymentAmount.setText(paymentAmount.getText()+"10,000");
+        cardName.setText("Ahmed Abbas");
+        cardNo.setText("123456789012");
+        loyalityPoints.setText("10");
+        worth.setText("PKR: 100");
+        dialog.show();
+    }
 
 
 
@@ -56,11 +80,11 @@ public class SelectionActivity extends AppCompatActivity {
             UpdatableFragment reportFragment = new ReportFragment();
             UpdatableFragment saleFragment = new SalesFragment(reportFragment);
             UpdatableFragment inventoryFragment = new InventoryFragment(saleFragment);
-            UpdatableFragment paymentFragment = new PaymentFragment();
+
 
             fragments = new UpdatableFragment[] { inventoryFragment, saleFragment,
-                    reportFragment,paymentFragment };
-            fragmentNames = new String[] { "Inventory", "Sales", "Report","Payment Fragment" };
+                    reportFragment};
+            fragmentNames = new String[] { "Inventory", "Sales", "Report" };
 
         }
 
