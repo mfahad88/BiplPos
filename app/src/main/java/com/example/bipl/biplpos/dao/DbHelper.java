@@ -12,6 +12,8 @@ import java.util.List;
 import com.example.bipl.biplpos.data.ProductBean;
 import com.example.bipl.biplpos.data.SalesBean;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by fahad on 2/10/2017.
  */
@@ -39,7 +41,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertProducts(int Id,String NAME,String UNITPRICE){
+    public void insertInventory(int Id,String NAME,String UNITPRICE){
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues contentValues = new ContentValues();
@@ -80,7 +82,8 @@ public class DbHelper extends SQLiteOpenHelper {
         try{
 
             SQLiteDatabase db=this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
+
+           ContentValues contentValues = new ContentValues();
             contentValues.put("ID", Id);
             contentValues.put("NAME", NAME);
             contentValues.put("QTY", Float.parseFloat(Qty));
@@ -88,7 +91,7 @@ public class DbHelper extends SQLiteOpenHelper {
             db.insert("sales_tbl", null, contentValues);
             db.close();
         }catch (Exception e){
-            e.getMessage();
+            Log.e(TAG,e.getMessage());
         }
 
     }
@@ -112,6 +115,9 @@ public class DbHelper extends SQLiteOpenHelper {
             rs.close();
         }catch (Exception e){
             e.getMessage();
+        }
+        for(int i=0;i<list.size();i++){
+            Log.e(TAG,list.get(i).getName()+" | "+list.get(i).getQty()+" | "+list.get(i).getTotalAmount());
         }
         return list;
     }

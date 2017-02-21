@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 
 import com.example.bipl.biplpos.R;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ReportFragment extends UpdatableFragment {
+public class PaymentFragment extends UpdatableFragment {
 
 
-    public ReportFragment() {
+    public PaymentFragment() {
         // Required empty public constructor
     }
 
@@ -24,12 +25,11 @@ public class ReportFragment extends UpdatableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_report, container, false);
+        return inflater.inflate(R.layout.fragment_payment, container, false);
     }
 
     @Override
     public void update() {
-        
-    }
 
+    }
 }

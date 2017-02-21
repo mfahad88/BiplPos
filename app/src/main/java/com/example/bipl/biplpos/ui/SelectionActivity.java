@@ -33,42 +33,15 @@ public class SelectionActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        /*adapter.addFragment(new InventoryFragment(), "Inventory");
-        adapter.addFragment(new SalesFragment(), "Sales");
-        adapter.addFragment(new ReportFragment(), "Report");*/
 
         viewPager.setAdapter(adapter);
+        if(getIntent().getBooleanExtra("ReturnFinger",false)){
+            viewPager.setCurrentItem(1);
+        }
     }
 
 
-   /* class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }*/
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -83,10 +56,11 @@ public class SelectionActivity extends AppCompatActivity {
             UpdatableFragment reportFragment = new ReportFragment();
             UpdatableFragment saleFragment = new SalesFragment(reportFragment);
             UpdatableFragment inventoryFragment = new InventoryFragment(saleFragment);
+            UpdatableFragment paymentFragment = new PaymentFragment();
 
             fragments = new UpdatableFragment[] { inventoryFragment, saleFragment,
-                    reportFragment };
-            fragmentNames = new String[] { "Inventory", "Sales", "Report" };
+                    reportFragment,paymentFragment };
+            fragmentNames = new String[] { "Inventory", "Sales", "Report","Payment Fragment" };
 
         }
 
@@ -111,6 +85,7 @@ public class SelectionActivity extends AppCompatActivity {
          */
         public void update(int index) {
             fragments[index].update();
+
         }
 
     }

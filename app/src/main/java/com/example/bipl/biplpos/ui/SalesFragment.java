@@ -2,6 +2,7 @@ package com.example.bipl.biplpos.ui;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,7 +56,7 @@ public class SalesFragment extends UpdatableFragment{
     Bitmap bm;
     static boolean isCapturing = false;
     Dialog dialog;
-
+    FingerFragment newFragment;
     public SalesFragment(UpdatableFragment reportFragment) {
         // Required empty public constructor
         super();
@@ -72,6 +74,7 @@ public class SalesFragment extends UpdatableFragment{
         return mCamera;
 
     }
+
 
     void init(){
         img_current.setImageBitmap(null);
@@ -115,16 +118,15 @@ public class SalesFragment extends UpdatableFragment{
         linearLayout=(LinearLayout)view.findViewById(R.id.linearLayoutSales);
         btn_finger=(Button)view.findViewById(R.id.buttonFinger);
         btn_qr=(Button)view.findViewById(R.id.buttonQR);
-
-        //frag.addView(totalAmount);
-        new getProduct().execute();
+        update();
         btn_finger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
 
-                    FingerFragment newFragment = new FingerFragment();
-                    newFragment.show(getFragmentManager(),"dialog");
+
+                    newFragment = new FingerFragment();
+                    newFragment.show(getFragmentManager(),null);
 
                 }catch (Exception e){
                     Log.e("Finger Dialog",e.getMessage());
@@ -168,24 +170,6 @@ public class SalesFragment extends UpdatableFragment{
         tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
-    /*public void showpopup(){
-        dialog.setContentView(R.layout.fingerdialog);
-        mFrameLayout = (FrameLayout)dialog.findViewById(R.id.camera_preview);
-        btn_enroll = (Button)dialog.findViewById(R.id.btn_enroll);
-        img_current = (ImageView)dialog.findViewById(R.id.img_current);
-
-        nurugoBSP = new NurugoBSP();
-        NurugoBSP.InfoData infoData = nurugoBSP.new InfoData();
-        final int ret = nurugoBSP.init(infoData);
-        if(!isCapturing){
-            isCapturing = true;
-
-
-            mCamera.setPreviewCallback(mPreviewCallback);
-
-        }
-        dialog.show();
-    }*/
 
     Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
 
@@ -354,6 +338,7 @@ public class SalesFragment extends UpdatableFragment{
             Log.e("Error",e.getMessage());
         }
     }
+
 
 
     public class getProduct extends AsyncTask<Void,Void,Void>{

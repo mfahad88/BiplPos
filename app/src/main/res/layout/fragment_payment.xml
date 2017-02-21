@@ -1,0 +1,230 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/payment_frag"
+    tools:context="com.example.bipl.biplpos.ui.PaymentFragment">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tableLayout2">
+
+        <TableRow
+            android:background="#FFC90E"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:text="@string/pay_invoice"
+                android:textSize="25sp"
+                android:gravity="center_horizontal|center_vertical"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="5dp"
+                android:id="@+id/textView3" />
+        </TableRow>
+    </TableLayout>
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tableLayout2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:gravity="left">
+
+            <TextView
+                android:text="@string/paymentAmount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:textColor="#4A67DE"
+                android:id="@+id/textView4" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left">
+
+
+            <EditText
+                android:width="340dp"
+                android:text="@string/pkr"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="16dp"
+                android:id="@+id/editTextAmount" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:padding="5dp">
+
+            <TextView
+                android:text="@string/nameonCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left">
+
+            <EditText
+                android:hint="Mr. ABC"
+                android:width="340dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="16dp"
+                android:id="@+id/editTextName" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:padding="5dp">
+
+            <TextView
+                android:text="@string/cardNumber"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="left">
+
+            <EditText
+                android:hint="12345678901"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:width="340dp"
+                android:focusable="false"
+                android:textSize="16dp"
+                android:id="@+id/editTextCardno" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+
+            <TextView
+                android:text="@string/loyalityPoints"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:textSize="16dp" />
+
+            <TextView
+                android:text="@string/worth"
+                android:gravity="left"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:width="10dp"
+                android:id="@+id/textView5" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left">
+
+            <EditText
+                android:hint="10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:layout_weight="2"
+                android:focusable="false"
+                android:textSize="16dp"
+                android:id="@+id/editTextLoyality" />
+
+            <EditText
+                android:hint="10,000"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:editable="false"
+                android:focusable="false"
+                android:textSize="16dp"
+                android:id="@+id/editTextWorth" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp">
+
+            <TextView
+                android:text="@string/otp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:hint="1234"
+                android:width="340dp"
+                android:gravity="left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:id="@+id/editTextOTP" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="1dp">
+
+            <Button
+                android:text="@string/loyality"
+                android:background="@drawable/roundbtnred"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginRight="30dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonLoyality" />
+
+            <Button
+                android:text="@string/account"
+                android:background="@drawable/roundbtngreen"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonAccount" />
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>

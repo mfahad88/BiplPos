@@ -14,8 +14,11 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.bipl.biplpos.boc.InventoryFragmentBOC;
 import com.example.bipl.biplpos.R;
+import com.example.bipl.biplpos.dao.DbHelper;
 
 
 /**
@@ -157,6 +160,7 @@ public class InventoryFragment extends UpdatableFragment {
     public void update() {
     }
 
+
     private class getRecords extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -200,7 +204,7 @@ public class InventoryFragment extends UpdatableFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             InventoryFragmentBOC inventoryFragmentBOC=new InventoryFragmentBOC();
-            inventoryFragmentBOC.insertSales(getContext(),Id_prod,prodName,prodQty,prodPrice);
+            inventoryFragmentBOC.insertSales(view.getContext(),Id_prod,prodName,prodQty,prodPrice);
         }
     }
 

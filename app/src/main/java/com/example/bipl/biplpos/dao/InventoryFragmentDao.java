@@ -16,7 +16,7 @@ public class InventoryFragmentDAO {
 
     public void insertInventory(Context context, int Id, String inventoryName, String inventoryPrice){
         DbHelper dbHelper = new DbHelper(context);
-        dbHelper.insertProducts(Id,inventoryName, inventoryPrice);
+        dbHelper.insertInventory(Id,inventoryName, inventoryPrice);
     }
 
     public void insertSales(Context context,int Id_prod,String prodName,String prodQty,String prodPrice){

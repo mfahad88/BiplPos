@@ -42,9 +42,14 @@ public class FingerFragment extends DialogFragment {
     Bitmap bm;
     static boolean isCapturing = false;
     View view;
+    int ret = -1;
+    UpdatableFragment fragment;
+    public FingerFragment(UpdatableFragment fragment) {
+        this.fragment=fragment;
+    }
 
-
-
+    public FingerFragment() {
+    }
     static Camera getCameraInstance(){
 
         if(mCamera==null){
@@ -127,22 +132,7 @@ public class FingerFragment extends DialogFragment {
 
             NurugoBSP.InfoData infoData = nurugoBSP.new InfoData();
             final int ret = nurugoBSP.init(infoData);
-            try {
-            /*    getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(view.getContext(),"Place your finger",Toast.LENGTH_SHORT).show();
-                    }
-                });*/
-
-            }catch (Exception e){
-                Log.e(TAG,e.getMessage());
-            }
-
-
             new captureTask().execute();
-
-
         }catch (Exception e){
             Log.e("Error",e.getMessage());
         }
@@ -170,7 +160,7 @@ public class FingerFragment extends DialogFragment {
     void enroll(byte[] data) throws Exception {
         try {
 
-            int ret = -1;
+
 
             byte[] outRaw = nurugoBSP.extractYuvToRaw(data, 1);
 
@@ -185,26 +175,32 @@ public class FingerFragment extends DialogFragment {
                 }
             });
             ret = nurugoBSP.getErrorCode();
-            if(ret!=0){
-                Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
-                Camera.Parameters p = mCamera.getParameters();
-                p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                mCamera.setParameters(p);
-                mCamera.release();
-                getDialog().hide();
-             /*   Intent i=new Intent(getActivity(),SelectionActivity.class);
-                i.putExtra("ReturnFinger",true);
-                startActivity(i);*/
 
-                isCapturing=false;
-                releaseCamera();
-                onResume();
-            }else{
-                Toast.makeText(getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
-                isCapturing=false;
-                releaseCamera();
-                onResume();
-            }
+               new Handler().postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       if (ret != 0) {
+                           Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
+                           Camera.Parameters p = mCamera.getParameters();
+                           p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                           mCamera.setParameters(p);
+                           mCamera.release();
+                           getDialog().hide();
+                           Intent i = new Intent(getActivity(), SelectionActivity.class);
+                           i.putExtra("ReturnFinger", true);
+                           startActivity(i);
+                           isCapturing=false;
+                           releaseCamera();
+                           //onResume();
+                           onDestroy();
+                       } else{
+                           Toast.makeText(getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
+                           isCapturing=false;
+                           releaseCamera();
+                           //onResume();
+                       }
+                   }
+               },3000);
 
         }catch (Exception e){
             Log.e("Error",e.getMessage());
@@ -335,6 +331,17 @@ public class FingerFragment extends DialogFragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mCamera.setPreviewCallback(mPreviewCallback);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            Fragment fragment = getFragmentManager().findFragmentById(R.id.finger_fragment);
+            getFragmentManager().beginTransaction().remove(fragment).commit();
+        }catch (Exception e){
+            Log.e(TAG,e.getMessage());
         }
     }
 }
