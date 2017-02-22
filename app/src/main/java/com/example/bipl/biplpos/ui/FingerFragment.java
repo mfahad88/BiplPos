@@ -99,7 +99,10 @@ public class FingerFragment extends DialogFragment {
      * void
      */
     public void releaseCamera(){
-
+        Camera.Parameters p = mCamera.getParameters();
+        p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        mCamera.setParameters(p);
+        mCamera.release();
         mCameraPreview.getHolder().removeCallback(mCameraPreview);
         mCameraPreview = null;
         mFrameLayout.removeAllViews();
@@ -184,14 +187,9 @@ public class FingerFragment extends DialogFragment {
                    public void run() {
                        if (ret != 0) {
                            Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
-                           Camera.Parameters p = mCamera.getParameters();
-                           p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                           mCamera.setParameters(p);
-                           mCamera.release();
-
                            getDialog().hide();
                            Intent i = new Intent(getActivity(), SelectionActivity.class);
-                           i.putExtra("ReturnFinger", true);
+                           i.putExtra("ReturnFinger", "NO");
                            startActivity(i);
                            isCapturing=false;
                            releaseCamera();
@@ -199,11 +197,17 @@ public class FingerFragment extends DialogFragment {
                            onResume();
                         //   onDestroy();
                        } else{
-                           Toast.makeText(getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
+                           Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
+
+                           getDialog().hide();
+                           Intent i = new Intent(getActivity(), SelectionActivity.class);
+                           i.putExtra("ReturnFinger", "YES");
+                           startActivity(i);
                            isCapturing=false;
-                           releaseCamera();
+                           //releaseCamera();
+
                            //showpaymentDialog();
-                           //onResume();
+                         //  onResume();
                        }
                    }
                },3000);

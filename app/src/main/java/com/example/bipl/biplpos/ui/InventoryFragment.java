@@ -1,6 +1,7 @@
 package com.example.bipl.biplpos.ui;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -144,6 +145,7 @@ public class InventoryFragment extends UpdatableFragment {
                                 dialog.dismiss();
                             }
                         });
+
                         dialog.show();
                     }catch (Exception e){
                         Log.e("TAG",e.getMessage());

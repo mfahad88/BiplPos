@@ -16,7 +16,6 @@
                 android:hint="@string/name"
                 android:width="100dp"
                 android:ems="10"
-                android:focusableInTouchMode="true"
                 android:singleLine="true"
                 android:layout_marginLeft="20dp"
                 android:id="@+id/editTextName" />

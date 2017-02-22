@@ -2,6 +2,7 @@ package com.example.bipl.biplpos.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bipl.biplpos.R;
+
+import org.w3c.dom.Text;
+
+import static com.example.bipl.biplpos.R.id.radio;
 
 /**
  * Created by fahad on 2/9/2017.
@@ -39,14 +48,31 @@ public class SelectionActivity extends AppCompatActivity {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
-        if(getIntent().getBooleanExtra("ReturnFinger",false)){
-            viewPager.setCurrentItem(1);
-            showpaymentDialog(this);
+        Intent i=getIntent();
+        if(i.getStringExtra("ReturnFinger")!=null) {
+            if (i.getStringExtra("ReturnFinger").equals("YES")) {
+                viewPager.setCurrentItem(1);
+                showpaymentDialog(this);
+
+            } else {
+                viewPager.setCurrentItem(1);
+
+            }
         }
     }
 
-    public void showpaymentDialog(Context context){
+    public void succesfulDialog(Context context){
         Dialog dialog=new Dialog(context);
+        dialog.setContentView(R.layout.confirmation_dialog);
+        TextView tvAmount=(TextView)dialog.findViewById(R.id.textViewMessage);
+        TextView tvRef=(TextView)dialog.findViewById(R.id.textViewRef);
+        dialog.setTitle("Payment Successful");
+        tvAmount.setText(tvAmount.getText().toString().replace(":PAMOUNT","10,000"));
+        tvRef.setText(tvRef.getText().toString().replace(":PREF","mr140013"));
+        dialog.show();
+    }
+    public void showpaymentDialog(final Context context){
+        final Dialog dialog=new Dialog(context);
         dialog.setContentView(R.layout.fragment_payment);
         EditText paymentAmount=(EditText)dialog.findViewById(R.id.editTextAmount);
         EditText cardName=(EditText)dialog.findViewById(R.id.editTextName);
@@ -54,14 +80,25 @@ public class SelectionActivity extends AppCompatActivity {
         EditText loyalityPoints=(EditText)dialog.findViewById(R.id.editTextLoyality);
         EditText worth=(EditText)dialog.findViewById(R.id.editTextWorth);
         EditText otp=(EditText)dialog.findViewById(R.id.editTextOTP);
-        Button btn_loyality=(Button)dialog.findViewById(R.id.buttonLoyality);
-        Button btn_account=(Button)dialog.findViewById(R.id.buttonAccount);
+
+        final RadioGroup radioGroup=(RadioGroup)dialog.findViewById(R.id.radioGroup);
         dialog.setTitle("Payment...");
         paymentAmount.setText(paymentAmount.getText()+"10,000");
         cardName.setText("Ahmed Abbas");
         cardNo.setText("123456789012");
         loyalityPoints.setText("10");
         worth.setText("PKR: 100");
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton radiopaymentType=(RadioButton)dialog.findViewById(checkedId);
+                Toast.makeText(dialog.getContext(),radiopaymentType.getText(), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                succesfulDialog(context);
+            }
+        });
+
         dialog.show();
     }
 
