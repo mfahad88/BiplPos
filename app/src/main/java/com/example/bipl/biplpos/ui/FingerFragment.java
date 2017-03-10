@@ -1,6 +1,7 @@
 package com.example.bipl.biplpos.ui;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -99,11 +100,11 @@ public class FingerFragment extends DialogFragment {
      * void
      */
     public void releaseCamera(){
-        Camera.Parameters p = mCamera.getParameters();
+  /*      Camera.Parameters p = mCamera.getParameters();
         p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         mCamera.setParameters(p);
         mCamera.release();
-        mCameraPreview.getHolder().removeCallback(mCameraPreview);
+        mCameraPreview.getHolder().removeCallback(mCameraPreview);*/
         mCameraPreview = null;
         mFrameLayout.removeAllViews();
         mCamera.setPreviewCallback(null);
@@ -181,36 +182,50 @@ public class FingerFragment extends DialogFragment {
                 }
             });
             ret = nurugoBSP.getErrorCode();
+            if(ret ==0){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(view.getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
+                      //  img_current.setImageBitmap(bm);
+                        getDialog().hide();
 
-               new Handler().postDelayed(new Runnable() {
-                   @Override
-                   public void run() {
-                       if (ret != 0) {
-                           Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
-                           getDialog().hide();
-                           Intent i = new Intent(getActivity(), SelectionActivity.class);
-                           i.putExtra("ReturnFinger", "NO");
-                           startActivity(i);
-                           isCapturing=false;
-                           releaseCamera();
+                        Intent i = new Intent(getActivity(), SelectionActivity.class);
+                        i.putExtra("ReturnFinger", "YES");
+                        startActivity(i);
+                        isCapturing=false;
+                    }
+                },1000);
 
-                           onResume();
+                // releaseCamera();
+
+                //showpaymentDialog();
+                //  onResume();
+            }
+            else {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Toast.makeText(view.getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
+                        getDialog().hide();
+
+                       Intent i = new Intent(getActivity(), SelectionActivity.class);
+                        i.putExtra("ReturnFinger", "NO");
+                        startActivity(i);
+
+                        isCapturing = false;
+
+
+                        //  onResume();
                         //   onDestroy();
-                       } else{
-                           Toast.makeText(getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
 
-                           getDialog().hide();
-                           Intent i = new Intent(getActivity(), SelectionActivity.class);
-                           i.putExtra("ReturnFinger", "YES");
-                           startActivity(i);
-                           isCapturing=false;
-                           //releaseCamera();
+                    }
+                }, 9000);
 
-                           //showpaymentDialog();
-                         //  onResume();
-                       }
-                   }
-               },3000);
+            }
+
+
 
         }catch (Exception e){
             Log.e("Error",e.getMessage());
@@ -344,16 +359,6 @@ public class FingerFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        try {
-            Fragment fragment = getFragmentManager().findFragmentById(R.id.finger_fragment);
-            getFragmentManager().beginTransaction().remove(fragment).commit();
-        }catch (Exception e){
-            Log.e(TAG,e.getMessage());
-        }
-    }
 
 
 }

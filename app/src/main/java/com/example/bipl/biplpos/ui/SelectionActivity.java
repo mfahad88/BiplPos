@@ -48,6 +48,7 @@ public class SelectionActivity extends AppCompatActivity {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
+
         Intent i=getIntent();
         if(i.getStringExtra("ReturnFinger")!=null) {
             if (i.getStringExtra("ReturnFinger").equals("YES")) {

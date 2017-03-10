@@ -77,11 +77,12 @@
         android:layout_below="@+id/editTextPass"
         android:layout_marginTop="20dp"
         android:id="@+id/buttonLogin"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 
 
 </RelativeLayout>

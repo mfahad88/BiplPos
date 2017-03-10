@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.example.bipl.biplpos.boc.SalesFragmentBOC;
 import com.example.bipl.biplpos.R;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.nurugo.api.*;
 
 /**
@@ -47,16 +49,10 @@ public class SalesFragment extends UpdatableFragment{
     TextView name_tv,unit_tv,qty_tv;
     Button btn_finger,btn_qr;
     UpdatableFragment reportFragment;
-    static Camera mCamera;
-    CameraPreview mCameraPreview;
-    FrameLayout mFrameLayout;
-    NurugoBSP nurugoBSP;
-    Button btn_enroll;
-    ImageView img_current;
-    Bitmap bm;
-    static boolean isCapturing = false;
     Dialog dialog;
-    FingerFragment newFragment;
+    Dialog dialogQr;
+    Boolean isScanned=false;
+
     public SalesFragment(UpdatableFragment reportFragment) {
         // Required empty public constructor
         super();
@@ -66,45 +62,11 @@ public class SalesFragment extends UpdatableFragment{
     public SalesFragment() {
     }
 
-    static Camera getCameraInstance(){
-
-        if(mCamera==null){
-            mCamera = Camera.open();
-        }
-        return mCamera;
-
+    public static SalesFragment newInstance() {
+         return new SalesFragment();
     }
 
 
-    void init(){
-        img_current.setImageBitmap(null);
-        btn_enroll.setEnabled(true);
-
-        if(mCamera!=null)
-            mCamera.setPreviewCallback(null);
-
-    }
-
-    public void releaseCamera(){
-
-        mCameraPreview.getHolder().removeCallback(mCameraPreview);
-        mCameraPreview = null;
-        mFrameLayout.removeAllViews();
-        mCamera.setPreviewCallback(null);
-        mCamera.release();
-        mCamera = null;
-
-    }
-
-    public void initCamera(){
-
-        mCamera = getCameraInstance();
-        mCameraPreview = new CameraPreview(view.getContext(), mCamera);
-        mFrameLayout.addView(mCameraPreview);
-
-        nurugoBSP.initCameraParam(mCamera);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,15 +85,23 @@ public class SalesFragment extends UpdatableFragment{
             @Override
             public void onClick(View v) {
                 try {
-
-
-                    newFragment = new FingerFragment();
-                    newFragment.show(getFragmentManager(),null);
+                    showDialog();
 
                 }catch (Exception e){
                     Log.e("Finger Dialog",e.getMessage());
                 }
 
+            }
+        });
+        btn_qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    showDialogQR();
+
+                    } catch(Exception e){
+                        e.getMessage();
+                }
             }
         });
         return view;
@@ -170,162 +140,70 @@ public class SalesFragment extends UpdatableFragment{
         tableLayout.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
     }
 
+    public void showDialogQR(){
 
-    Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
-
-        @Override
-        public void onPreviewFrame(byte[] data, Camera camera) {
-            try {
-                enroll(data);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-    };
-
-    void enroll(byte[] data) throws Exception {
-
-        int ret = -1;
-
-        byte[] outRaw = nurugoBSP.extractYuvToRaw(data, 1);
-
-        bm = nurugoBSP.extractRawToBitmap(outRaw);
-
-        new Handler().post(new Runnable() {
-
-            @Override
-            public void run() {
-
-                img_current.setImageBitmap(bm);
-            }
-        });
-        ret =  nurugoBSP.getErrorCode();
-        if(ret!=0){
-            Toast.makeText(dialog.getContext(), getErrorMessage(ret), Toast.LENGTH_SHORT).show();
-            isCapturing=false;
-            releaseCamera();
-            onResume();
-        }else{
-            Toast.makeText(dialog.getContext(), String.valueOf(getErrorMessage(ret)), Toast.LENGTH_SHORT).show();
-            isCapturing=false;
-            releaseCamera();
-            onResume();
-        }
-
+        dialogQr = new Dialog(view.getContext());
+        dialogQr.setContentView(R.layout.fragment_qr);
+        dialogQr.show();
+        IntentIntegrator qrScan=IntentIntegrator.forSupportFragment(SalesFragment.this);
+        qrScan.setPrompt("Scanning..");
+        qrScan.setCameraId(0);
+        qrScan.setBarcodeImageEnabled(true);
+        qrScan.initiateScan();
     }
 
-    String getErrorMessage(int errorCode){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        String prName="";
+        if (result != null) {
+            //if qrcode has nothing in it
+            if (result.getContents() == null) {
+               // Toast.makeText(view.getContext(), "Result Not Found", Toast.LENGTH_LONG).show();
+                prName=result.getContents();
+                dialogQr.dismiss();
+            } else {
+                //if qr contains data
+                try {
+                    //converting the data to json
+                    //JSONObject obj = new JSONObject(result.getContents());
 
-        String errorMessage = "";
+                    prName=result.getContents();
+                    dialogQr.dismiss();
 
-        switch(errorCode){
-            case NurugoBSP.NURUGO_ERROR.NONE:
-                errorMessage = "SUCCESS";
-                break;
-            case NurugoBSP.NURUGO_ERROR.INIT_EXCEPTION:
-                errorMessage = "INIT_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.CONSTRUCTOR_INVALID:
-                errorMessage = "CONSTRUCTOR_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.CAMERA_SET_EXCEPTION:
-                errorMessage = "CAMERA_SET_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.CAMERA_SET_INVALID:
-                errorMessage = "CAMERA_SET_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_JPEG_TO_RAW_EXCEPTION:
-                errorMessage = "EXTRACT_JPEG_TO_RAW_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_JPEG_TO_RAW_INVALID:
-                errorMessage = "EXTRACT_JPEG_TO_RAW_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_IMAGE_CENTER_FIND_FAIL:
-                errorMessage = "EXTRACT_IMAGE_CENTER_FIND_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_VALID_IMAGE_FAIL:
-                errorMessage = "EXTRACT_VALID_IMAGE_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAW_TO_TEMPLATE_EXCEPTION:
-                errorMessage = "EXTRACT_RAW_TO_TEMPLATE_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAW_TO_TEMPLATE_INVALID:
-                errorMessage = "EXTRACT_RAW_TO_TEMPLATE_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_TEMPLATE_FAIL:
-                errorMessage = "EXTRACT_TEMPLATE_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_TEMPLATE_QUALITY_FAIL:
-                errorMessage = "EXTRACT_TEMPLATE_QUALITY_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAWS_TO_ROTATION_TEMPLATES_EXCEPTION:
-                errorMessage = "EXTRACT_RAWS_TO_ROTATION_TEMPLATES_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAWS_TO_ROTATION_TEMPLATES_INVALID:
-                errorMessage = "EXTRACT_RAWS_TO_ROTATION_TEMPLATES_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_TEMPLATES_TO_MERGING_TEMPLATE_EXCEPTION:
-                errorMessage = "EXTRACT_TEMPLATES_TO_MERGING_TEMPLATE_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_TEMPLATE_MERGING_INVALID:
-                errorMessage = "EXTRACT_TEMPLATE_MERGING_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_TEMPLATE_MERGING_FAIL:
-                errorMessage = "EXTRACT_TEMPLATE_MERGING_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAW_TO_IMAGE_EXCEPTION:
-                errorMessage = "EXTRACT_RAW_TO_IMAGE_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_RAW_TO_IMAGE_INVALID:
-                errorMessage = "EXTRACT_RAW_TO_IMAGE_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_RAW_EXCEPTION:
-                errorMessage = "MATCH_RAW_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_RAW_FAIL:
-                errorMessage = "MATCH_RAW_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_RAW_INVALID:
-                errorMessage = "MATCH_RAW_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATE_EXCEPTION:
-                errorMessage = "MATCH_TEMPLATE_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATE_INVALID:
-                errorMessage = "MATCH_TEMPLATE_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATE_FAIL:
-                errorMessage = "MATCH_TEMPLATE_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATES_EXCEPTION:
-                errorMessage = "MATCH_TEMPLATES_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATES_INVALID:
-                errorMessage = "MATCH_TEMPLATES_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.MATCH_TEMPLATES_FAIL:
-                errorMessage = "MATCH_TEMPLATES_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.OVERLAP_RAW_EXCEPTION:
-                errorMessage = "OVERLAP_RAW_EXCEPTION";
-                break;
-            case NurugoBSP.NURUGO_ERROR.OVERLAP_RAW_INVALID:
-                errorMessage = "OVERLAP_RAW_INVALID";
-                break;
-            case NurugoBSP.NURUGO_ERROR.OVERLAP_RAW_FAIL:
-                errorMessage = "OVERLAP_RAW_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_DIRECTION_SEARCH_FAIL:
-                errorMessage = "EXTRACT_DIRECTION_SEARCH_FAIL";
-                break;
-            case NurugoBSP.NURUGO_ERROR.EXTRACT_DIRECTION_SEARCH_INVALID:
-                errorMessage = "EXTRACT_DIRECTION_SEARCH_INVALID";
-                break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        return errorMessage;
+        Toast.makeText(view.getContext(), prName, Toast.LENGTH_LONG).show();
+    }
 
+    /*public void showDialogQR(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialogQR");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        QRFragment newFragment = new QRFragment();
+        newFragment.show(getFragmentManager(),"dialogQR");
+    }*/
+
+    public void showDialog(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        FingerFragment newFragment = new FingerFragment();
+        newFragment.show(getFragmentManager(),"dialog");
     }
 
     @Override

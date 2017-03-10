@@ -4,6 +4,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:id="@+id/inventory_frag"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             tools:context=".ui.InventoryFragment">
 
             <!-- TODO: Update blank fragment layout -->
