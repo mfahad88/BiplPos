@@ -25,7 +25,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -36,4 +35,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.1.1'
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     testCompile 'junit:junit:4.12'
+    compile files('src/main/libs/square.jar')
+    compile files('src/main/libs/apache-httpcomponents-httpcore.jar')
+    compile files('src/main/libs/httpclient-4.2.3.jar')
 }

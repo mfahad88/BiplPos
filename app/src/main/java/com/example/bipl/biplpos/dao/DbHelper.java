@@ -6,11 +6,22 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.example.bipl.biplpos.data.ProductBean;
 import com.example.bipl.biplpos.data.SalesBean;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import static android.content.ContentValues.TAG;
 
@@ -116,9 +127,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }catch (Exception e){
             e.getMessage();
         }
-        for(int i=0;i<list.size();i++){
-            Log.e(TAG,list.get(i).getName()+" | "+list.get(i).getQty()+" | "+list.get(i).getTotalAmount());
-        }
+
         return list;
     }
     
@@ -137,5 +146,35 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.e("TOTAL SUM: ",e.getMessage());
         }
         return total;
+    }
+
+    public List<String> getDebitCard(String panNo) throws Exception{
+        String text = null;
+        List<String> list=new ArrayList<>();
+
+        String url="http://10.7.255.70:8061/DebitCardWS/rs/webapi/getExpiry/"+panNo;
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(url);
+
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        HttpEntity httpEntity = httpResponse.getEntity();
+        InputStream is = httpEntity.getContent();
+
+        BufferedReader br=new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+
+        if((text=br.readLine())!=null){
+            JSONArray array=new JSONArray(text);
+            for(int i=0;i<array.length();i++){
+                JSONObject obj=array.getJSONObject(i);
+
+                list.add(obj.getString("debitTitle"));
+                list.add(obj.getString("panNo"));
+                list.add(obj.getString("expiryStatus"));
+                list.add(obj.getString("expiryDate"));
+            }
+        }
+        Log.e("List: ",list.toString());
+        return list;
+
     }
 }

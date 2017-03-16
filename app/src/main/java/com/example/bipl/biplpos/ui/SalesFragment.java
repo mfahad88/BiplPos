@@ -9,6 +9,7 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +35,8 @@ import com.example.bipl.biplpos.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nurugo.api.*;
+import com.square.MagRead;
+import com.square.MagReadListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,11 +50,15 @@ public class SalesFragment extends UpdatableFragment{
     LinearLayout linearLayout;
     TableRow tr;
     TextView name_tv,unit_tv,qty_tv;
-    Button btn_finger,btn_qr;
+    Button btn_finger,btn_qr,btn_debit;
     UpdatableFragment reportFragment;
     Dialog dialog;
-    Dialog dialogQr;
+    Dialog dialogQr,dialogDebit;
     Boolean isScanned=false;
+
+    private UpdateBytesHandler updateBytesHandler;
+    private UpdateBitsHandler updateBitsHandler;
+    private String panNo;
 
     public SalesFragment(UpdatableFragment reportFragment) {
         // Required empty public constructor
@@ -80,6 +87,7 @@ public class SalesFragment extends UpdatableFragment{
         linearLayout=(LinearLayout)view.findViewById(R.id.linearLayoutSales);
         btn_finger=(Button)view.findViewById(R.id.buttonFinger);
         btn_qr=(Button)view.findViewById(R.id.buttonQR);
+        btn_debit=(Button)view.findViewById(R.id.buttonDebit);
         update();
         btn_finger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +109,17 @@ public class SalesFragment extends UpdatableFragment{
 
                     } catch(Exception e){
                         e.getMessage();
+                }
+            }
+        });
+
+        btn_debit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    showDialogDebit();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -205,6 +224,45 @@ public class SalesFragment extends UpdatableFragment{
         FingerFragment newFragment = new FingerFragment();
         newFragment.show(getFragmentManager(),"dialog");
     }
+    ///// for DEBIT CARD////////
+    public void showDialogDebit(){
+
+
+            dialogDebit=new Dialog(view.getContext());
+            dialogDebit.setTitle("Scanning Debit Card..");
+            dialogDebit.show();
+
+
+            try {
+                MagRead read = new MagRead();
+                read.addListener(new MagReadListener() {
+
+                    @Override
+                    public void updateBytes(String bytes) {
+                        Message msg = new Message();
+                        msg.obj = bytes;
+                        updateBytesHandler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void updateBits(String bits) {
+                        Message msg = new Message();
+                        msg.obj = bits;
+                        updateBitsHandler.sendMessage(msg);
+
+                    }
+                });
+
+
+            updateBytesHandler = new UpdateBytesHandler();
+            updateBitsHandler = new UpdateBitsHandler();
+            read.start();
+
+
+        }catch (Exception e){
+            Log.e("TAG",e.getMessage());
+        }
+    }
 
     @Override
     public void update() {
@@ -236,6 +294,38 @@ public class SalesFragment extends UpdatableFragment{
             }
 
         }
+    }
+
+    private class UpdateBytesHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            String bytes = (String)msg.obj;
+            panNo=bytes.length()>14?bytes:"";
+
+            if(panNo!=null && panNo.length()>14){
+                dialogDebit.dismiss();
+               // Toast.makeText(view.getContext(), "PAN: "+panNo.substring(panNo.indexOf(";")+1,panNo.indexOf("="))+"\n LENGTH: "+panNo.length(), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getActivity(), SelectionActivity.class);
+                i.putExtra("ReturnPAN", panNo.substring(panNo.indexOf(";")+1,panNo.indexOf("=")));
+                i.putExtra("ReturnAmount",totalAmount.getText().toString());
+                startActivity(i);
+            }else{
+                Toast.makeText(view.getContext(), "Please Card properly", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+    }
+
+    private class UpdateBitsHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            String bits = (String)msg.obj;
+            //strippedBinaryView.setText(bits);
+        }
+
     }
 
 }
