@@ -21,7 +21,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="250dp"
@@ -30,6 +29,8 @@
         android:id="@+id/imageView"
         android:layout_weight="1"
         android:contentDescription="Header" />
+
+    <include layout="@layout/content_main" />
 
 
 </android.support.design.widget.CoordinatorLayout>

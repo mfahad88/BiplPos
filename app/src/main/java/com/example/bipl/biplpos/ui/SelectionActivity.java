@@ -85,11 +85,13 @@ public class SelectionActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(1);
                     Context context = getApplicationContext();
                     String panNo = i.getStringExtra("ReturnPAN");
-                    Toast.makeText(context, "PAN: " + panNo + " Amount: " + i.getStringExtra("ReturnAmount"), Toast.LENGTH_SHORT).show();
-                    DbHelper dbHelper = new DbHelper(context);
+                    Toast.makeText(this, "PAN: " + panNo + " Amount: " + i.getStringExtra("ReturnAmount"), Toast.LENGTH_SHORT).show();
+                    DbHelper dbHelper = new DbHelper(this);
                     showpaymentDialog(this, dbHelper.getDebitCard(panNo).get(0), dbHelper.getDebitCard(panNo).get(1),
                             i.getStringExtra("ReturnAmount"));
-                }catch (Exception e){e.printStackTrace();}
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
 
             }
@@ -106,9 +108,10 @@ public class SelectionActivity extends AppCompatActivity {
         tvRef.setText(tvRef.getText().toString().replace(":PREF","mr140013"));
         dialog.show();
     }
-    public void showpaymentDialog(final Context context,String name,String panNo,String amount){
-        final Dialog dialog=new Dialog(context);
 
+    public void showpaymentDialog(final Context context,String name,String panNo,String amount){
+
+        final Dialog dialog=new Dialog(context);
         dialog.setContentView(R.layout.fragment_payment);
         EditText paymentAmount=(EditText)dialog.findViewById(R.id.editTextAmount);
         EditText cardName=(EditText)dialog.findViewById(R.id.editTextName);
@@ -136,7 +139,6 @@ public class SelectionActivity extends AppCompatActivity {
             });
 
             dialog.show();
-
     }
 
 
