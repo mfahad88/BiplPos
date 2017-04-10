@@ -148,30 +148,35 @@ public class DbHelper extends SQLiteOpenHelper {
         return total;
     }
 
-    public List<String> getDebitCard(String panNo) throws Exception{
+    public List<String> getDebitCard(String panNo) {
         String text = null;
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
+        try {
 
-        String url="http://10.7.255.70:8061/DebitCardWS/rs/webapi/getExpiry/"+panNo;
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
 
-        HttpResponse httpResponse = httpClient.execute(httpGet);
-        HttpEntity httpEntity = httpResponse.getEntity();
-        InputStream is = httpEntity.getContent();
+            String url = "http://10.7.255.70:8061/DebitCardWS/rs/webapi/getExpiry/" + panNo;
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
 
-        BufferedReader br=new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            InputStream is = httpEntity.getContent();
 
-        if((text=br.readLine())!=null){
-            JSONArray array=new JSONArray(text);
-            for(int i=0;i<array.length();i++){
-                JSONObject obj=array.getJSONObject(i);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
 
-                list.add(obj.getString("debitTitle"));
-                list.add(obj.getString("panNo"));
-                list.add(obj.getString("expiryStatus"));
-                list.add(obj.getString("expiryDate"));
+            if ((text = br.readLine()) != null) {
+                JSONArray array = new JSONArray(text);
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    list.add(obj.getString("debitTitle"));
+                    list.add(obj.getString("panNo"));
+                    list.add(obj.getString("expiryStatus"));
+                    list.add(obj.getString("expiryDate"));
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         Log.e("List: ",list.toString());
         return list;

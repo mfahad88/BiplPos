@@ -52,7 +52,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:id="@+id/textView6" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -84,5 +85,26 @@
         android:layout_alignParentEnd="true"
         style="@style/Widget.AppCompat.Button.Borderless" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        app:srcCompat="@drawable/loginheader2"
+        android:id="@+id/imageView"
+        android:contentDescription="Header"
+        android:layout_above="@+id/editTextUser"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="21dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/logo_urdu_new"
+        android:id="@+id/logo_urdu"
+        android:contentDescription="Footer"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-100dp"
+        />
 
 </RelativeLayout>

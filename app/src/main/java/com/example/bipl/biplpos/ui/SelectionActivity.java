@@ -1,45 +1,30 @@
 package com.example.bipl.biplpos.ui;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.StrictMode;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.bipl.biplpos.R;
-import com.example.bipl.biplpos.dao.DbHelper;
-import com.square.MagRead;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.example.bipl.biplpos.dao.ws.PUVDebitCardStatusPortBinding;
+import com.example.bipl.biplpos.dao.ws.PUVwsParam;
+import com.example.bipl.biplpos.data.DebitCardBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.bipl.biplpos.R.id.radio;
 
 /**
  * Created by fahad on 2/9/2017.
@@ -59,6 +44,10 @@ public class SelectionActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
     }
 
@@ -73,7 +62,7 @@ public class SelectionActivity extends AppCompatActivity {
             if (i.getStringExtra("ReturnFinger") != null) {
                 if (i.getStringExtra("ReturnFinger").equals("YES")) {
                     viewPager.setCurrentItem(1);
-                    showpaymentDialog(this,"","","");
+                    showpaymentDialog(this,"Ahmed Abbas","4628830000144406","10,000");
 
                 } else {
                     viewPager.setCurrentItem(1);
@@ -81,24 +70,52 @@ public class SelectionActivity extends AppCompatActivity {
                 }
             }
             if (i.getStringExtra("ReturnPAN") != null && i.getStringExtra("ReturnAmount") != null) {
-                try {
                     viewPager.setCurrentItem(1);
-                    Context context = getApplicationContext();
-                    String panNo = i.getStringExtra("ReturnPAN");
-                    Toast.makeText(this, "PAN: " + panNo + " Amount: " + i.getStringExtra("ReturnAmount"), Toast.LENGTH_SHORT).show();
-                    DbHelper dbHelper = new DbHelper(this);
-                    showpaymentDialog(this, dbHelper.getDebitCard(panNo).get(0), dbHelper.getDebitCard(panNo).get(1),
-                            i.getStringExtra("ReturnAmount"));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
 
+                    String panNo = (String)i.getStringExtra("ReturnPAN");
+                    Toast.makeText(this, "PAN: " + panNo + " Amount: " + i.getStringExtra("ReturnAmount"), Toast.LENGTH_LONG).show();
+                    try {
+                        pinpadDialog(this);
+                    /*    Intent intent=new Intent(SelectionActivity.this,KeyboardView.class);
+                        startActivity(intent);*/
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    //pinpadDialog(this);
+                   //DbHelper dbHelper = new DbHelper(this);
+                 //   new HttpAsyncTask().execute(panNo,(String)i.getStringExtra("ReturnAmount"));
 
             }
        
     }
 
-    public void succesfulDialog(Context context){
+    public void pinpadDialog(final Context context){
+
+        final Dialog dialog=new Dialog(context);
+        dialog.setContentView(R.layout.layout_pinpad);
+        /*final EditText pinCode=(EditText)dialog.findViewById(R.id.editText2);
+        Button btn_ok=(Button)dialog.findViewById(R.id.button4);
+        Button btn_cancel=(Button)dialog.findViewById(R.id.button5);
+
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(context, String.valueOf(pinCode.getText()), Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+*/        dialog.show();
+    }
+
+    public void succesfulDialog(Context context,String amount){
         Dialog dialog=new Dialog(context);
         dialog.setContentView(R.layout.confirmation_dialog);
         TextView tvAmount=(TextView)dialog.findViewById(R.id.textViewMessage);
@@ -109,7 +126,7 @@ public class SelectionActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void showpaymentDialog(final Context context,String name,String panNo,String amount){
+    public void showpaymentDialog(final Context context, String name, String panNo, final String amount){
 
         final Dialog dialog=new Dialog(context);
         dialog.setContentView(R.layout.fragment_payment);
@@ -134,7 +151,7 @@ public class SelectionActivity extends AppCompatActivity {
                     RadioButton radiopaymentType = (RadioButton) dialog.findViewById(checkedId);
                     Toast.makeText(dialog.getContext(), radiopaymentType.getText(), Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    succesfulDialog(context);
+                    succesfulDialog(context,amount);
                 }
             });
 
@@ -142,7 +159,67 @@ public class SelectionActivity extends AppCompatActivity {
     }
 
 
+    class HttpAsyncTask extends AsyncTask<String,PUVDebitCardStatusPortBinding,List<DebitCardBean>> {
 
+        ProgressDialog dialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog=new ProgressDialog(getApplicationContext());
+            dialog.setTitle("Loading...");
+            dialog.setMessage("Please wait...");
+            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            dialog.show();
+        }
+
+        @Override
+        protected List<DebitCardBean> doInBackground(String... params) {
+            PUVDebitCardStatusPortBinding binding=new PUVDebitCardStatusPortBinding();
+            PUVwsParam param=new PUVwsParam();
+            PUVwsParam param1=new PUVwsParam();
+            List<DebitCardBean> list=new ArrayList<>();
+            try {
+                DebitCardBean bean=new DebitCardBean();
+                param.username = "admin";
+                param.password = "admin";
+                param.panNo = params[0];
+                param.STAN = "662453";
+                param.requestCode = "003";
+                param1.username=param.username;
+                param1.password=param.password;
+                param1.panNo=param.panNo;
+                param1.STAN=param.STAN;
+                param1.requestCode="002";
+
+                bean.setIbUser(binding.getDebitCardStatus(param).statusDescription);
+                bean.setPanNo(binding.getDebitCardStatus(param).panNo);
+                bean.setSTAN(binding.getDebitCardStatus(param).STAN);
+                bean.setResponseCode(binding.getDebitCardStatus(param).responseCode);
+                bean.setResponseDescription(binding.getDebitCardStatus(param).responseDescription);
+                bean.setStatusCode(binding.getDebitCardStatus(param).statusCode);
+                bean.setStatusDescription(binding.getDebitCardStatus(param1).statusDescription);
+                bean.setExpiryDate(binding.getDebitCardStatus(param1).expiryDate);
+                bean.setAmount(params[1]);
+                list.add(bean);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<DebitCardBean> beanList) {
+            super.onPostExecute(beanList);
+            if(beanList.get(0)!=null) {
+                dialog.dismiss();
+                for (int i = 0; i < beanList.size(); i++) {
+                    showpaymentDialog(SelectionActivity.this,beanList.get(i).getIbUser(),beanList.get(i).getPanNo(),beanList.get(i).getAmount());
+
+                }
+            }
+        }
+
+    }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
 

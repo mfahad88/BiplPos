@@ -55,10 +55,10 @@ public class SalesFragment extends UpdatableFragment{
     Dialog dialog;
     Dialog dialogQr,dialogDebit;
     Boolean isScanned=false;
-
+    MagRead read;
     private UpdateBytesHandler updateBytesHandler;
     private UpdateBitsHandler updateBitsHandler;
-    private String panNo;
+
 
     public SalesFragment(UpdatableFragment reportFragment) {
         // Required empty public constructor
@@ -164,11 +164,12 @@ public class SalesFragment extends UpdatableFragment{
         dialogQr = new Dialog(view.getContext());
         dialogQr.setContentView(R.layout.fragment_qr);
         dialogQr.show();
-        IntentIntegrator qrScan=IntentIntegrator.forSupportFragment(SalesFragment.this);
+
+      /*  IntentIntegrator qrScan=IntentIntegrator.forSupportFragment(SalesFragment.this);
         qrScan.setPrompt("Scanning..");
         qrScan.setCameraId(0);
         qrScan.setBarcodeImageEnabled(true);
-        qrScan.initiateScan();
+        qrScan.initiateScan();*/
     }
 
     @Override
@@ -230,18 +231,26 @@ public class SalesFragment extends UpdatableFragment{
 
             dialogDebit=new Dialog(view.getContext());
             dialogDebit.setTitle("Scanning Debit Card..");
+            dialogDebit.setContentView(R.layout.scan_card_dialog);
             dialogDebit.show();
 
 
+
             try {
-                MagRead read = new MagRead();
+                read = new MagRead();
                 read.addListener(new MagReadListener() {
 
                     @Override
                     public void updateBytes(String bytes) {
-                        Message msg = new Message();
-                        msg.obj = bytes;
-                        updateBytesHandler.sendMessage(msg);
+                        if(bytes.length()>33 && bytes.length()<35) {
+                            Message msg = new Message();
+                            msg.obj = bytes;
+                            updateBytesHandler.sendMessage(msg);
+                        }else{
+                            Message msg = new Message();
+                            msg.obj = "Try again";
+                            updateBytesHandler.sendMessage(msg);
+                        }
                     }
 
                     @Override
@@ -262,6 +271,7 @@ public class SalesFragment extends UpdatableFragment{
         }catch (Exception e){
             Log.e("TAG",e.getMessage());
         }
+        read.release();
     }
 
     @Override
@@ -296,22 +306,29 @@ public class SalesFragment extends UpdatableFragment{
         }
     }
 
+
+
     private class UpdateBytesHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             String bytes = (String)msg.obj;
-            panNo=bytes.length()>14?bytes:"";
+            String panNo=bytes;
 
             if(panNo!=null && panNo.length()>14){
                 dialogDebit.dismiss();
+                //String number=panNo.substring(panNo.indexOf(";")+1,panNo.indexOf("="));
                // Toast.makeText(view.getContext(), "PAN: "+panNo.substring(panNo.indexOf(";")+1,panNo.indexOf("="))+"\n LENGTH: "+panNo.length(), Toast.LENGTH_SHORT).show();
+
                 Intent i = new Intent(getActivity(), SelectionActivity.class);
                 i.putExtra("ReturnPAN", panNo.substring(panNo.indexOf(";")+1,panNo.indexOf("=")));
                 i.putExtra("ReturnAmount",totalAmount.getText().toString());
                 startActivity(i);
+
             }else{
-                Toast.makeText(view.getContext(), "Please Card properly", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(view.getContext(), "Please Swipe Card properly", Toast.LENGTH_SHORT).show();
+
             }
 
         }

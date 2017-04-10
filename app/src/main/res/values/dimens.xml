@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="pstck_pinpad__default_prompt_padding">24dp</dimen>
+    <dimen name="pstck_pinpad__default_prompt_paddingTop">16dp</dimen>
+    <dimen name="pstck_pinpad__default_prompt_paddingBottom">16dp</dimen>
+    <dimen name="pstck_pinpad__default_indicator_height">64dp</dimen>
 </resources>

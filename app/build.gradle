@@ -38,4 +38,5 @@ dependencies {
     compile files('src/main/libs/square.jar')
     compile files('src/main/libs/apache-httpcomponents-httpcore.jar')
     compile files('src/main/libs/httpclient-4.2.3.jar')
+    compile files('src/main/libs/easywsdl/ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar')
 }

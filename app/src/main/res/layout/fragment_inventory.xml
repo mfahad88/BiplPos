@@ -6,7 +6,8 @@
             android:id="@+id/inventory_frag"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            tools:context=".ui.InventoryFragment">
+            tools:context=".ui.InventoryFragment"
+            android:background="@drawable/backpanel2">
 
             <!-- TODO: Update blank fragment layout -->
 
@@ -67,7 +68,8 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/tableLayout">
+                        android:id="@+id/tableLayout"
+                        >
 
                         <TableRow
                             android:layout_width="match_parent"
