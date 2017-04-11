@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:id="@+id/pinpad">
 
     <EditText
         android:id="@+id/password_field"
@@ -15,13 +16,49 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:singleLine="true"
+        android:inputType="numberPassword"
+        android:visibility="invisible"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
+        <ImageView
+            android:id="@+id/imageview_circle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/circle"
+            />
+        <ImageView
+            android:id="@+id/imageview_circle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/circle"
+            />
+        <ImageView
+            android:id="@+id/imageview_circle3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/circle"
+            />
+        <ImageView
+            android:id="@+id/imageview_circle4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/circle"
+            />
+    </LinearLayout>
     <TableLayout
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@android:color/transparent"
         android:divider="@drawable/keyboard_divider"
         android:orientation="vertical"
         android:showDividers="beginning|middle|end">

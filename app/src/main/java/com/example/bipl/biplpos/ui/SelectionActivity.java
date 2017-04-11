@@ -11,8 +11,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -73,11 +75,14 @@ public class SelectionActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(1);
 
                     String panNo = (String)i.getStringExtra("ReturnPAN");
-                    Toast.makeText(this, "PAN: " + panNo + " Amount: " + i.getStringExtra("ReturnAmount"), Toast.LENGTH_LONG).show();
                     try {
-                        pinpadDialog(this);
-                    /*    Intent intent=new Intent(SelectionActivity.this,KeyboardView.class);
+                       /* Intent intent=new Intent(getApplicationContext(),KeyboardView.class);
+                        Log.e("Intent>>>>>",String.valueOf(intent));
                         startActivity(intent);*/
+                        Dialog dialog=new KeyboardView(this);
+                        dialog.setTitle("PinPad");
+                        dialog.show();
+
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -90,30 +95,6 @@ public class SelectionActivity extends AppCompatActivity {
        
     }
 
-    public void pinpadDialog(final Context context){
-
-        final Dialog dialog=new Dialog(context);
-        dialog.setContentView(R.layout.layout_pinpad);
-        /*final EditText pinCode=(EditText)dialog.findViewById(R.id.editText2);
-        Button btn_ok=(Button)dialog.findViewById(R.id.button4);
-        Button btn_cancel=(Button)dialog.findViewById(R.id.button5);
-
-
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                Toast.makeText(context, String.valueOf(pinCode.getText()), Toast.LENGTH_SHORT).show();
-            }
-        });
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-*/        dialog.show();
-    }
 
     public void succesfulDialog(Context context,String amount){
         Dialog dialog=new Dialog(context);
@@ -157,7 +138,31 @@ public class SelectionActivity extends AppCompatActivity {
 
             dialog.show();
     }
+        //  PinPad
+        public void pinpadDialog(final Context context){
 
+            final Dialog dialog=new KeyboardView(context);
+
+        /*final EditText pinCode=(EditText)dialog.findViewById(R.id.editText2);
+        Button btn_ok=(Button)dialog.findViewById(R.id.button4);
+        Button btn_cancel=(Button)dialog.findViewById(R.id.button5);
+
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(context, String.valueOf(pinCode.getText()), Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });*/
+            dialog.show();
+        }
 
     class HttpAsyncTask extends AsyncTask<String,PUVDebitCardStatusPortBinding,List<DebitCardBean>> {
 
